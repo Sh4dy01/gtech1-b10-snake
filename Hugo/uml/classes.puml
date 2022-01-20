@@ -1,0 +1,12 @@
+@startuml 
+
+class MainSDLWindow{
+    -SDl_Window window;
+    -SDL_Renderer renderer;
+    MainSDLWindow()
+    ~MainSDLWindoiw()
+    int : Init()
+    SDL_Renderer*GetRenderer()
+}
+
+@enduml
