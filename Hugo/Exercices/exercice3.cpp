@@ -1,5 +1,13 @@
 #include "exercice3.hpp"
 
+MainSDLWindow::MainSDLWindow(){
+    this->window,renderer = NULL;
+}
+MainSDLWindow::~MainSDLWindow(){
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 int MainSDLWindow::Init(const char title[], int width, int height){
     //Création de la fenêtre
     window = SDL_CreateWindow("Une fenêtre", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
@@ -23,6 +31,9 @@ int MainSDLWindow::Init(const char title[], int width, int height){
 
     return EXIT_SUCCESS;
 }
+SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
+SDL_Rect MainSDLWindow::GetRect(){return rect;}
+
 
 int main()
 {
@@ -36,6 +47,7 @@ int main()
 
     while (IsGameRunning){
         Uint32 frame_time_start = SDL_GetTicks();
+
         SDL_Event event;
         const Uint8 *keystates = SDL_GetKeyboardState(NULL);
         const int speed = 5;

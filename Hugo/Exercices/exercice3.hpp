@@ -10,18 +10,11 @@ Uint32 frame_rate = 20;
 class MainSDLWindow{
 
     public:
-    MainSDLWindow(){
-        this->window,renderer = NULL;
-    }
-    ~MainSDLWindow(){
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-    }
+    MainSDLWindow();
+    ~MainSDLWindow();
     int Init(const char title[], int width, int height);
-
-    SDL_Renderer *GetRenderer(){return renderer;};
-    SDL_Rect GetRect(){return rect;}
+    SDL_Renderer *GetRenderer();
+    SDL_Rect GetRect();
 
     private:
     SDL_Window *window;
