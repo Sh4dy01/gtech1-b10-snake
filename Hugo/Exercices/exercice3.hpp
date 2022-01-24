@@ -13,6 +13,7 @@ class MainSDLWindow{
     MainSDLWindow();
     ~MainSDLWindow();
     int Init(const char title[], int width, int height);
+    
     SDL_Renderer *GetRenderer();
     SDL_Rect GetRect();
 

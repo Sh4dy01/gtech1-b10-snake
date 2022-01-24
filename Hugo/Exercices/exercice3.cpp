@@ -46,11 +46,11 @@ int main()
     SDL_Rect rect = main_window.GetRect();
 
     while (IsGameRunning){
-        Uint32 frame_time_start = SDL_GetTicks();
+        const int speed = 5;
 
+        Uint32 frame_time_start = SDL_GetTicks();
         SDL_Event event;
         const Uint8 *keystates = SDL_GetKeyboardState(NULL);
-        const int speed = 5;
 
         while(SDL_PollEvent(&event)){
             if(event.type == SDL_QUIT){
@@ -75,9 +75,12 @@ int main()
         //Clear
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE); //Change la couleur de fond
         SDL_RenderClear(renderer);
-        //Draw a simple rect
+
+        //Draw a white simple rectangle
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderFillRect(renderer, &rect);
+        
+        //Render the rectangle
         SDL_RenderPresent(renderer);
 
         Uint32 frame_time_interval = SDL_GetTicks() - frame_time_start;
