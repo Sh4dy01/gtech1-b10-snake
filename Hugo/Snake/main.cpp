@@ -5,7 +5,7 @@ int main()
     bool IsGameRunning = true;
 
     MainSDLWindow main_window;
-    main_window.Init("Snake", 512, 512);
+    main_window.Init("Snake", 640, 640);
     
     SDL_Renderer* renderer = main_window.GetRenderer();
 
