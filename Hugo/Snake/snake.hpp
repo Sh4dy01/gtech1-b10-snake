@@ -1,6 +1,6 @@
 #pragma once
 
-#include "segment.hpp"
+#include <SDL2/SDL.h>
 
 class Snake {
 public:
@@ -9,4 +9,19 @@ public:
     void Print();
 private:
     Segment* head;
+    int speed;
+};
+
+class Segment {
+private:
+    Segment *next;
+};
+
+class Fruit{
+public:
+    Fruit();
+
+    int *GenerateFruit();
+private:
+    int pos[2];
 };

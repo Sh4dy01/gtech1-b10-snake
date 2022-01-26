@@ -40,12 +40,18 @@ int MainSDLWindow::Init(){
     return EXIT_SUCCESS;
 }
 
+
 //Draw the playground
-void MainSDLWindow::DrawPlayground(){
+void MainSDLWindow::Draw(){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &rect);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+}
+
+void MainSDLWindow::DrawFruit(){
+    
 }
 
 //Quit the game
