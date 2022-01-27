@@ -2,20 +2,28 @@
 
 #include <SDL2/SDL.h>
 
-class Snake {
-public:
-    void Move(int dir);
-    void Eat();
-    void Print();
-private:
-    Segment* head;
-    int speed;
-};
-
 class Segment {
 private:
     Segment *next;
 };
+
+class Snake {
+public:
+    Snake();
+    void CheckDirection();
+    void Move(int newx, int newy);
+    void Eat();
+    void Draw();
+    void Print();
+
+    SDL_Rect GetHead();
+private:
+    Segment* head;
+    int direction;
+    int x, y;
+};
+
+
 
 class Fruit{
 public:

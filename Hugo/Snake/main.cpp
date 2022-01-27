@@ -1,8 +1,10 @@
 #include "playground.cpp"
+#include "snake.cpp"
 
 int main()
 {
     MainSDLWindow main_window;
+    Snake snake;
     main_window.Init();
     int frame_rate = main_window.GetFrameRate();
     SDL_Renderer* renderer = main_window.GetRenderer();
@@ -11,9 +13,8 @@ int main()
         Uint32 frame_time_start = SDL_GetTicks();
 
         main_window.CheckForQuit(); //Click X to quit the game
-        main_window.Draw(); //Draw the playground
-        
-        SDL_RenderPresent(renderer); //Refresh the renderer
+        snake.CheckDirection();
+        main_window.Draw(); //Draw everything
 
         Uint32 frame_time_interval = SDL_GetTicks() - frame_time_start;
         if(frame_time_interval < frame_rate){

@@ -1,25 +1,32 @@
 #include "snake.hpp"
 #include <cstdlib>
 
-/*void Snake::Move(int dir){
-    switch (dir)
-    {
-    case 1:
-        snake.x += speed;
-        break;
-    case 2:
-        snake.x -= speed;
-        break;
-    case 3:
-        snake.y -= speed;
-        break;
-    case 4:
-        snake.y += speed;
-        break;
-    default:
-        break;
+Snake::Snake(){
+    this->direction = 0;
+    this->x,y = 0;
+}
+
+void Snake::CheckDirection(){
+    const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+
+    if (keystates[SDL_SCANCODE_UP] && direction != 2){
+        direction = 1;
     }
-}*/
+    else if (keystates[SDL_SCANCODE_DOWN] && direction != 1){
+        direction = 2;
+    }
+    else if (keystates[SDL_SCANCODE_LEFT] && direction != 4){
+        direction = 3;
+    }
+    else if (keystates[SDL_SCANCODE_RIGHT] && direction != 3){
+        direction = 4;
+    }
+}
+
+void Snake::Move(int newx, int newy){
+    this-> x = newx;
+    this-> y = newy;
+}
 
 Fruit::Fruit(){
     this->pos[0] = 0;

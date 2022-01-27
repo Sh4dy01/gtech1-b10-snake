@@ -10,10 +10,15 @@ MainSDLWindow::MainSDLWindow(){
     this->IsGameRunning = true;
     this->frame_rate = 20;
 
-    this->rect.h = width - pixels * 2;
-    this->rect.w = rect.h;
-    this->rect.x = pixels;
-    this->rect.y = rect.x;
+    this->map.h = width - pixels * 2;
+    this->map.w = map.h;
+    this->map.x = pixels;
+    this->map.y = map.x;
+
+    this->head.h = pixels;
+    this->head.w = pixels,
+    this->head.x = (width - pixels * 2) / 2;
+    this->head.y = head.x;
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -46,11 +51,14 @@ void MainSDLWindow::Draw(){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &rect);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, &map);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, &head);
+
+    SDL_RenderPresent(renderer); //Refresh the renderer
 }
 
-void MainSDLWindow::DrawFruit(){
+void MainSDLWindow::AddSnake(){
     
 }
 
@@ -69,3 +77,6 @@ void MainSDLWindow::CheckForQuit(){
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
 int MainSDLWindow::GetFrameRate(){return frame_rate;}
+SDL_Rect MainSDLWindow::GetSnake(){return head;}
+
+void MainSDLWindow::SetSnake(SDL_Rect snake){head = snake;}
