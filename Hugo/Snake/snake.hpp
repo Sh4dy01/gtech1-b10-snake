@@ -3,25 +3,42 @@
 #include <SDL2/SDL.h>
 
 class Segment {
+public:
+    Segment();
+    ~Segment();
+    void AddSnake(int newx, int newy);
+    void Move();
 private:
     Segment *next;
+    
+    int x, y;
 };
+
 
 class Snake {
 public:
     Snake();
+    ~Snake();
+
+    void Init(int pixels, int squares);
     void CheckDirection();
-    void Move(int newx, int newy);
+    void Move();
     void Eat();
-    void Draw();
     void Print();
 
-    SDL_Rect GetHead();
+    int GetDirection();
+    int GetX();
+    int GetY();
 private:
     Segment* head;
+
     int direction;
-    int x, y;
+    int newDirection;
+    float x, y;
+    int speed;
 };
+
+
 
 
 

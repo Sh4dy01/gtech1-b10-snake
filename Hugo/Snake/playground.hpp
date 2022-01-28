@@ -15,23 +15,21 @@ class MainSDLWindow{
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
-    void Draw();
+    void Draw(int x, int y);
     void CheckForQuit();
     void AddSnake();
 
     SDL_Renderer *GetRenderer();
-    SDL_Rect GetSnake();
     bool GetGameState();
     int GetFrameRate();
     int GetPixels();
-
-    void SetSnake(SDL_Rect snake);
+    int GetSquares();
 
     private:
     int width, height, nbrSquare, pixels;
     bool IsGameRunning;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_Rect map, fruit, head, segment;
+    SDL_Rect map, head;
     Uint32 frame_rate;
 };
