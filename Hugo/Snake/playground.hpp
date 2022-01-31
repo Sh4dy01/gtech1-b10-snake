@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+
 #include "snake.hpp"
 
 using namespace std;
@@ -15,9 +16,11 @@ class MainSDLWindow{
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
-    void Draw(int x, int y);
+    void Draw(int x, int y, int length);
     void CheckForQuit();
     void AddSnake();
+    void CheckBorders();
+    bool CheckFruit();
 
     SDL_Renderer *GetRenderer();
     bool GetGameState();
@@ -31,5 +34,8 @@ class MainSDLWindow{
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Rect map, head;
+    SDL_Rect Gfruit;
+    Fruit fruit;
     Uint32 frame_rate;
+
 };

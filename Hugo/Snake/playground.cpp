@@ -1,7 +1,9 @@
 #include "playground.hpp"
 
+
 MainSDLWindow::MainSDLWindow(){
-    this->window,renderer = NULL;
+    this->window = NULL;
+    this->renderer = NULL;
     
     this->nbrSquare = 20;
     this->pixels = 32;
@@ -10,7 +12,7 @@ MainSDLWindow::MainSDLWindow(){
     this->IsGameRunning = true;
     this->frame_rate = 20;
 
-    this->map.h = nbrSquare * pixels - pixels * 2;
+    this->map.h = width - pixels * 2;
     this->map.w = map.h;
     this->map.x = pixels;
     this->map.y = map.x;
@@ -19,6 +21,11 @@ MainSDLWindow::MainSDLWindow(){
     this->head.w = pixels,
     this->head.x = nbrSquare / 2 * pixels;
     this->head.y = head.x;
+
+    this->Gfruit.w = pixels;
+    this->Gfruit.h = pixels;
+    this->Gfruit.x = fruit.GetX() * pixels;
+    this->Gfruit.y = fruit.GetY() * pixels;
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -47,7 +54,7 @@ int MainSDLWindow::Init(){
 
 
 //Draw the playground
-void MainSDLWindow::Draw(int x, int y){
+void MainSDLWindow::Draw(int x, int y, int length){
     head.x = x;
     head.y = y;
 
@@ -55,10 +62,30 @@ void MainSDLWindow::Draw(int x, int y){
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &map);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, &Gfruit);
+    for (int i = 0; i < length; i++)
+    {
+        /* code */
+    }
+    
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &head);
 
     SDL_RenderPresent(renderer); //Refresh the renderer
+}
+
+bool MainSDLWindow::CheckFruit(){
+
+    if (head.x == Gfruit.x && head.y == Gfruit.y)
+    {
+        fruit.GenerateFruit();
+        Gfruit.x = fruit.GetX() * pixels;
+        Gfruit.y = fruit.GetY() * pixels;
+
+        return true;
+    }
+    return false;
 }
 
 //Quit the game

@@ -1,11 +1,15 @@
 #include "snake.hpp"
 #include <cstdlib>
 
+MainSDLWindow window;
+
 Snake::Snake(){
-    this->x, y = 0;
+    this->x = 0;
+    this->y = 0;
+    this->length = 1;
     this->direction = 0;
     this->newDirection = 0;
-    this->speed = 2;
+    this->speed = 4;
 }
 
 Snake::~Snake(){
@@ -13,6 +17,13 @@ Snake::~Snake(){
     {
         delete head;
     }
+}
+
+void Snake::Init(int pixels, int squares){
+    this->pixels = pixels;
+    this->squares = squares;
+    this->x = this->pixels * this->squares / 2 - this->pixels;
+    this->y = x;
 }
 
 void Snake::CheckDirection(){
@@ -30,9 +41,16 @@ void Snake::CheckDirection(){
     else if (keystates[SDL_SCANCODE_RIGHT] && direction != 3){
         newDirection = 4;
     }
+    
+    if (x%32==0 && y%32==0)
+    {
+        direction = newDirection;
+    }
 }
 
+
 void Snake::Move(){
+    
     switch (direction)
     {
     case 1:
@@ -52,19 +70,53 @@ void Snake::Move(){
     }
 }
 
+void Snake::CheckBorders(){
+    if (x > squares * pixels - pixels * 2)
+    {
+        Reset();
+    }
+    else if (x < 0 + pixels)
+    {
+        Reset();
+    }
+    else if (y > squares * pixels - pixels * 2)
+    {
+        Reset();
+    }
+    else if (y < 0 + pixels)
+    {
+        Reset();
+    }
+}
+
+void Snake::Reset(){
+    x = squares * pixels / 2 - pixels;
+    y = x;
+    direction = 0;
+    newDirection = 0;
+    length = 0;
+}
+
+void Snake::Print(){
+    cout << x << "&" << y;
+}
+
 void Snake::Eat(){
     if (head != NULL)
     {
         head->AddSnake();
+        length+=1;
     }
 }
 
 int Snake::GetDirection(){return direction;}
 int Snake::GetX(){return x;}
 int Snake::GetY(){return y;}
+int Snake::GetLength(){return length;}
 
 Segment::Segment(){
     this->x, y = 0;
+    this->next = NULL;
 }
 
 Segment::~Segment(){
@@ -91,13 +143,16 @@ void Segment::Move(int newx, int newy){
 
 
 Fruit::Fruit(){
-    this->pos[0] = 0;
-    this->pos[1] = 0;
+    this->x = 0;
+    this->y = 0;
+
+    this->GenerateFruit();
 }
 
-int *Fruit::GenerateFruit(){
-    pos[0] = rand() % 19 + 1;
-    pos[1] = rand() % 19 + 1;
-
-    return pos;
+void Fruit::GenerateFruit(){
+    x = rand() % 18 + 1;
+    y = rand() % 18 + 1;
 }
+
+int Fruit::GetX(){return x;}
+int Fruit::GetY(){return y;}

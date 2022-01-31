@@ -3,9 +3,10 @@
 
 int main()
 {
+    srand (time(NULL));
     MainSDLWindow main_window;
     Snake snake;
-    
+
     main_window.Init();
     snake.Init(main_window.GetPixels(), main_window.GetSquares());
     
@@ -17,9 +18,11 @@ int main()
 
         main_window.CheckForQuit(); //Click X to quit the game
         snake.CheckDirection();
+        snake.CheckBorders();
+        if(main_window.CheckFruit()){snake.Eat();}
         snake.Move();
         
-        main_window.Draw(snake.GetX(), snake.GetY()); //Draw everything
+        main_window.Draw(snake.GetX(), snake.GetY(), snake.GetLength()); //Draw everything
 
         Uint32 frame_time_interval = SDL_GetTicks() - frame_time_start;
         if(frame_time_interval < frame_rate){
