@@ -36,6 +36,4 @@ class MainSDLWindow{
     SDL_Rect map, head;
     SDL_Rect Gfruit;
     Fruit fruit;
-    Uint32 frame_rate;
-
 };

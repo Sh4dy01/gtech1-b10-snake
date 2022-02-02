@@ -10,7 +10,6 @@ MainSDLWindow::MainSDLWindow(){
     this->width = nbrSquare * pixels;
     this->height = width;
     this->IsGameRunning = true;
-    this->frame_rate = 20;
 
     this->map.h = width - pixels * 2;
     this->map.w = map.h;
@@ -31,7 +30,6 @@ MainSDLWindow::MainSDLWindow(){
 MainSDLWindow::~MainSDLWindow(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_Quit();
 }
 
 int MainSDLWindow::Init(){
@@ -64,10 +62,6 @@ void MainSDLWindow::Draw(int x, int y, int length){
     SDL_RenderFillRect(renderer, &map);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &Gfruit);
-    for (int i = 0; i < length; i++)
-    {
-        /* code */
-    }
     
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &head);
@@ -102,6 +96,5 @@ void MainSDLWindow::CheckForQuit(){
 
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
-int MainSDLWindow::GetFrameRate(){return frame_rate;}
 int MainSDLWindow::GetPixels(){return pixels;}
 int MainSDLWindow::GetSquares(){return nbrSquare;}

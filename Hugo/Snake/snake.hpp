@@ -6,11 +6,21 @@ class Segment {
 public:
     Segment();
     ~Segment();
-    void AddSnake();
-    void Move(int newx, int newy);
+    void AddSnake(int direction, int speed);
+    void Move();
+    void Init(int direction, int speed);
+
+    int GetX();
+    int GetY();
+    void SetX(int newx);
+    void SetY(int newy);
+    void SetDirection(int nextDirection);
+    void ResetBody();
 private:
     Segment *next;
     
+    int direction, nextDirection;
+    int speed;
     int x, y;
 };
 
@@ -20,18 +30,18 @@ public:
     Snake();
     ~Snake();
 
-    void Init(int pixels, int squares);
+    void Init(int squares, int pixels);
     void CheckDirection();
     void CheckBorders();
     void Move();
     void Eat();
-    void Print();
     void Reset();
 
     int GetDirection();
     int GetX();
     int GetY();
     int GetLength();
+    void SetTail(Segment *tail);
 
 private:
     Segment* head;
@@ -39,17 +49,14 @@ private:
 
     int length;
     int direction, newDirection;
-    int x;
-    int y;
     int speed;
-    int pixels, squares;
+    int playgroundLength, pixels;
 };
 
 
 class Fruit{
 public:
     Fruit();
-    ~Fruit();
 
     void GenerateFruit();
 

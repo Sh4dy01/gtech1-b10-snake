@@ -1,15 +1,12 @@
 #include "snake.hpp"
 #include <cstdlib>
 
-MainSDLWindow window;
-
 Snake::Snake(){
-    this->x = 0;
-    this->y = 0;
     this->length = 1;
     this->direction = 0;
     this->newDirection = 0;
     this->speed = 4;
+    head = new Segment;
 }
 
 Snake::~Snake(){
@@ -19,11 +16,12 @@ Snake::~Snake(){
     }
 }
 
-void Snake::Init(int pixels, int squares){
+void Snake::Init(int squares, int pixels){
+    this->playgroundLength = squares;
     this->pixels = pixels;
-    this->squares = squares;
-    this->x = this->pixels * this->squares / 2 - this->pixels;
-    this->y = x;
+    this->head->SetX(playgroundLength * pixels / 2 - pixels);
+    this->head->SetY(head->GetX());
+    this->head->Init(direction, speed);
 }
 
 void Snake::CheckDirection(){
@@ -41,16 +39,99 @@ void Snake::CheckDirection(){
     else if (keystates[SDL_SCANCODE_RIGHT] && direction != 3){
         newDirection = 4;
     }
-    
-    if (x%32==0 && y%32==0)
+
+    if (head->GetX()%32==0 && head->GetY()%32==0)
     {
         direction = newDirection;
+        head->SetDirection(direction);
     }
 }
 
 
 void Snake::Move(){
-    
+    head->Move();
+}
+
+void Snake::CheckBorders(){
+    if (head->GetX() > playgroundLength * pixels - pixels * 2)
+    {
+        Reset();
+    }
+    else if (head->GetX() < 0 + pixels)
+    {
+        Reset();
+    }
+    else if (head->GetY() > playgroundLength * pixels - pixels * 2)
+    {
+        Reset();
+    }
+    else if (head->GetY() < 0 + pixels)
+    {
+        Reset();
+    }
+}
+
+void Snake::Reset(){
+    head->SetX(playgroundLength * pixels / 2 - pixels);
+    head->SetY(head->GetX());
+
+    direction = 0;
+    newDirection = 0;
+    head->ResetBody();
+}
+
+void Snake::Eat(){
+    if (head != NULL)
+    {
+        head->AddSnake(this->direction, this->speed);
+        length+=1;
+    }
+}
+
+int Snake::GetDirection(){return direction;}
+int Snake::GetX(){return head->GetX();}
+int Snake::GetY(){return head->GetY();}
+int Snake::GetLength(){return length;}
+
+void Snake::SetTail(Segment *tail){this->tail = tail;}
+
+Segment::Segment(){
+    this->direction, this->speed = 0;
+    this->x, this->y = 0;
+    this->direction, this->nextDirection = 0;
+    this->next = NULL;
+}
+
+Segment::~Segment(){
+
+    if (next != NULL)
+    {
+        delete next;
+    }
+}
+
+void Segment::Init(int direction, int speed){
+    this->direction = direction;
+    this->speed = speed;
+}
+
+void Segment::AddSnake(int direction, int speed){
+    if (next != NULL)
+    {
+        next->AddSnake(direction, speed);
+    }else{
+        Segment *temp;
+        next = temp;
+        next->Init(direction, speed);
+    }
+}
+
+void Segment::Move(){
+    if (x%32==0 && y%32==0)
+    {
+        SetDirection(nextDirection);
+    }
+
     switch (direction)
     {
     case 1:
@@ -68,78 +149,33 @@ void Snake::Move(){
     default:
         break;
     }
-}
 
-void Snake::CheckBorders(){
-    if (x > squares * pixels - pixels * 2)
+    if (next != NULL)
     {
-        Reset();
-    }
-    else if (x < 0 + pixels)
-    {
-        Reset();
-    }
-    else if (y > squares * pixels - pixels * 2)
-    {
-        Reset();
-    }
-    else if (y < 0 + pixels)
-    {
-        Reset();
+        next->Move();
     }
 }
 
-void Snake::Reset(){
-    x = squares * pixels / 2 - pixels;
-    y = x;
-    direction = 0;
-    newDirection = 0;
-    length = 0;
-}
+void Segment::SetDirection(int nextDirection){
 
-void Snake::Print(){
-    cout << x << "&" << y;
-}
-
-void Snake::Eat(){
-    if (head != NULL)
+    direction = nextDirection;
+    if (next != NULL)
     {
-        head->AddSnake();
-        length+=1;
+        next->SetDirection(direction);
     }
 }
 
-int Snake::GetDirection(){return direction;}
-int Snake::GetX(){return x;}
-int Snake::GetY(){return y;}
-int Snake::GetLength(){return length;}
-
-Segment::Segment(){
-    this->x, y = 0;
-    this->next = NULL;
-}
-
-Segment::~Segment(){
+void Segment::ResetBody(){
     if (next != NULL)
     {
         delete next;
     }
 }
 
-void Segment::AddSnake(){
-    if (next != NULL)
-    {
-        next->AddSnake();
-    }else{
-        Segment *temp;
-        next = temp;
-    }
-}
-
-void Segment::Move(int newx, int newy){
-    this->x = newx;
-    this->y = newy;
-}
+int Segment::GetX(){return x;}
+int Segment::GetY(){return y;}
+void Segment::SetX(int newx){this->x = newx;}
+void Segment::SetY(int newy){this->y = newy;}
 
 
 Fruit::Fruit(){
