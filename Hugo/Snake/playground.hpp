@@ -16,7 +16,7 @@ class MainSDLWindow{
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
-    void Draw(int x, int y, int length);
+    void Draw(int length, Segment* head);
     void CheckForQuit();
     void AddSnake();
     void CheckBorders();
@@ -33,7 +33,8 @@ class MainSDLWindow{
     bool IsGameRunning;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_Rect map, head;
+    SDL_Rect map;
+    SDL_Rect Ghead;
     SDL_Rect Gfruit;
     Fruit fruit;
 };

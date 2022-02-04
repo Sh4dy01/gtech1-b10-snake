@@ -20,8 +20,8 @@ void Snake::Init(int squares, int pixels){
     this->playgroundLength = squares;
     this->pixels = pixels;
     this->head->SetX(playgroundLength * pixels / 2 - pixels);
-    this->head->SetY(head->GetX());
-    this->head->Init(direction, speed);
+    this->head->SetY(this->GetX());
+    this->head->Init(direction, speed, this->GetX(), this->GetY());
 }
 
 void Snake::CheckDirection(){
@@ -75,6 +75,7 @@ void Snake::Reset(){
     head->SetX(playgroundLength * pixels / 2 - pixels);
     head->SetY(head->GetX());
 
+    length = 1;
     direction = 0;
     newDirection = 0;
     head->ResetBody();
@@ -83,11 +84,12 @@ void Snake::Reset(){
 void Snake::Eat(){
     if (head != NULL)
     {
-        head->AddSnake(this->direction, this->speed);
+        head->AddSnake(this->direction, this->speed, this->GetX(), this->GetY());
         length+=1;
     }
 }
 
+Segment* Snake::GetHead(){return head;}
 int Snake::GetDirection(){return direction;}
 int Snake::GetX(){return head->GetX();}
 int Snake::GetY(){return head->GetY();}
@@ -110,26 +112,47 @@ Segment::~Segment(){
     }
 }
 
-void Segment::Init(int direction, int speed){
+void Segment::Init(int direction, int speed, int x, int y){
     this->direction = direction;
     this->speed = speed;
+    this->x = x;
+    this->y = y;
+
+    switch (direction)
+    {
+    case 1:
+        this->y += 32;
+        break;
+    case 2:
+        this->y -= 32;
+        break;
+    case 3:
+        this->x += 32;
+        break;
+    case 4:
+        this->x -= 32;
+        break;
+    default:
+        break;
+    }
+    cout << "x:" << this->GetX() << "y:" << this->GetY() << "\n";
 }
 
-void Segment::AddSnake(int direction, int speed){
+void Segment::AddSnake(int direction, int speed, int x, int y){
     if (next != NULL)
     {
-        next->AddSnake(direction, speed);
+        next->AddSnake(this->direction, speed, this->x, this->y);
     }else{
-        Segment *temp;
+        Segment *temp = new Segment;
         next = temp;
-        next->Init(direction, speed);
+        next->Init(direction, speed, x, y);
     }
 }
 
 void Segment::Move(){
-    if (x%32==0 && y%32==0)
+    if (this->x%32==0 && this->y%32==0)
     {
-        SetDirection(nextDirection);
+        this->direction = this->nextDirection;
     }
 
     switch (direction)
@@ -158,7 +181,7 @@ void Segment::Move(){
 
 void Segment::SetDirection(int nextDirection){
 
-    direction = nextDirection;
+    this->nextDirection = nextDirection;
     if (next != NULL)
     {
         next->SetDirection(direction);
@@ -170,6 +193,19 @@ void Segment::ResetBody(){
     {
         delete next;
     }
+}
+
+Segment* Segment::CheckNext(int length, int count){
+    while (count != length)
+    {
+        count++;
+        if (this->next != NULL)
+        {
+            next->CheckNext(length, count);
+        }
+    }
+
+    return this;
 }
 
 int Segment::GetX(){return x;}

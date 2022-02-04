@@ -6,9 +6,9 @@ class Segment {
 public:
     Segment();
     ~Segment();
-    void AddSnake(int direction, int speed);
+    void AddSnake(int direction, int speed, int x, int y);
     void Move();
-    void Init(int direction, int speed);
+    void Init(int direction, int speed, int x, int y);
 
     int GetX();
     int GetY();
@@ -16,6 +16,8 @@ public:
     void SetY(int newy);
     void SetDirection(int nextDirection);
     void ResetBody();
+    Segment* CheckNext(int length, int count);
+
 private:
     Segment *next;
     
@@ -41,6 +43,8 @@ public:
     int GetX();
     int GetY();
     int GetLength();
+    Segment* GetHead();
+
     void SetTail(Segment *tail);
 
 private:

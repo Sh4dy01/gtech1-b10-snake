@@ -21,11 +21,11 @@ int main()
 
         main_window.CheckForQuit(); //Click X to quit the game
         snake.CheckDirection();
-        snake.CheckBorders();
-        if(main_window.CheckFruit()) {/*snake.Eat();*/}
         snake.Move();
+        snake.CheckBorders();
+        if(main_window.CheckFruit()) {snake.Eat();}
         
-        main_window.Draw(snake.GetX(), snake.GetY(), snake.GetLength()); //Draw everything
+        main_window.Draw(snake.GetLength(), snake.GetHead()); //Draw everything
 
         frame_delay = frame_rate - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}
