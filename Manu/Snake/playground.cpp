@@ -9,17 +9,21 @@ MainSDLWindow::MainSDLWindow(){
     this->height = width;
     this->IsGameRunning = true;
     this->frame_rate = 20;
-    this->dir = 0;
 
-    this->playground.h = width - pixels * 2;
-    this->playground.w = playground.h;
-    this->playground.x = pixels;
-    this->playground.y = playground.x;
+    this->map.h = width - pixels * 2;
+    this->map.w = map.h;
+    this->map.x = pixels;
+    this->map.y = map.x;
 
-    this->rect.x = width/2;
-    this->rect.y = height/2;
-    this->rect.w = pixels;
-    this->rect.h = pixels;
+    this->head.h = pixels;
+    this->head.w = pixels,
+    this->head.x = (width - pixels * 2) / 2;
+    this->head.y = head.x;
+
+    this->fruit.h = pixels;
+    this->fruit.w = pixels;
+    this->fruit.x = 0;
+    this->fruit.y = 0;
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -43,18 +47,43 @@ int MainSDLWindow::Init(){
         return EXIT_FAILURE;
     }
 
+     //Inititialisation du texte
+    if(TTF_Init() == -1){
+        fprintf(stderr, "erreur d'initialisation de TTF_init : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+
+    };
+
     return EXIT_SUCCESS;
+
 }
+
 
 //Draw the playground
 void MainSDLWindow::Draw(){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &playground);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &rect);
+
+    SDL_RenderPresent(renderer); //Refresh the renderer
 }
+
+void MainSDLWindow::AddSnake(){
+    
+}
+
+//affichage du score 
+void MainSDLWindow::score(){
+
+    TTF_Font* font = NULL;
+    font = TTF_OpenFont("Fonts/Arial/Arial.ttf", 12);
+    
+	SDL_Color couleur = {255, 255, 255};
+	SDL_Surface* texte = TTF_RenderText_Blended(font, "test", couleur) ;
+
+	SDL_FreeSurface(texte); 
+	TTF_CloseFont(font);
+    
+};
 
 //Quit the game
 void MainSDLWindow::CheckForQuit(){
@@ -64,10 +93,16 @@ void MainSDLWindow::CheckForQuit(){
     while(SDL_PollEvent(&event)){
         if(event.type == SDL_QUIT){
             IsGameRunning = false;
+            TTF_Quit();
         }
     }
 }
 
+
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
 int MainSDLWindow::GetFrameRate(){return frame_rate;}
+SDL_Rect MainSDLWindow::GetSnake(){return head;}
+
+void MainSDLWindow::SetSnake(SDL_Rect snake){head = snake;}
+

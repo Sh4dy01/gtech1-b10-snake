@@ -10,6 +10,7 @@ int main()
 
     do{
         Uint32 frame_time_start = SDL_GetTicks();
+        
         main_window.CheckForQuit(); //Click X to quit the game
         main_window.Draw(); //Draw the playground
         SDL_RenderPresent(renderer); //Refresh the renderer

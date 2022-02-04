@@ -1,15 +1,17 @@
- #pragma once
+#pragma once
 
-class Segment{
-    private:
-    Segment* next;
+//#include <SDL2/SDL.h>
+
+class Segment {
+private:
+    Segment *next;
 };
 
 class Snake {
 public:
     Snake();
-    void ChangeDir();
-    void Move();
+    void CheckDirection();
+    void Move(int newx, int newy);
     void Eat();
     void Draw();
     void Print();
@@ -17,8 +19,18 @@ public:
     SDL_Rect GetHead();
 private:
     Segment* head;
-    SDL_Rect snake;
-    int dir;
-    int speed;
+    int direction;
+    int x, y;
 };
 
+
+
+class Fruit{ 
+public:
+    Fruit();
+
+    int *GenerateFruit();
+private:
+    Segment* fruit;
+    int pos[2];
+};
