@@ -1,30 +1,26 @@
 #include "playground.hpp"
 
-
 MainSDLWindow::MainSDLWindow(){
     this->window = NULL;
     this->renderer = NULL;
     
-    this->nbrSquare = 20;
-    this->pixels = 32;
-    this->width = nbrSquare * pixels;
+    this->width = SQUARES * PIXELS;
     this->height = width;
     this->IsGameRunning = true;
 
-    this->map.h = width - pixels * 2;
+    this->map.h = width - PIXELS * 2;
     this->map.w = map.h;
-    this->map.x = pixels;
+    this->map.x = PIXELS;
     this->map.y = map.x;
 
-    this->Ghead.h = pixels;
-    this->Ghead.w = pixels,
-    this->Ghead.x = nbrSquare / 2 * pixels;
+    this->Ghead.h = PIXELS;
+    this->Ghead.w = PIXELS,
+    this->Ghead.x = SQUARES / 2 * PIXELS;
     this->Ghead.y = Ghead.x;
 
-    this->Gfruit.w = pixels;
-    this->Gfruit.h = pixels;
-    this->Gfruit.x = fruit.GetX() * pixels;
-    this->Gfruit.y = fruit.GetY() * pixels;
+    this->Gfruit.w = PIXELS;
+    this->Gfruit.h = PIXELS;
+
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -46,41 +42,73 @@ int MainSDLWindow::Init(){
         cout << "Erreur lors de la creation du rendu:" << SDL_GetError();
         return EXIT_FAILURE;
     }
+/*
+    SDL_Surface *surface = NULL; 
+    SDL_Texture *texture, *tmp = NULL;
+
+    surface = SDL_LoadBMP("test.bmp");
+    if(NULL == surface)
+    {
+        cout << "Erreur SDL_LoadBMP :" << SDL_GetError();
+        return EXIT_FAILURE;
+    }
+
+    tmp = SDL_CreateTextureFromSurface(renderer, surface);
+    if(NULL == tmp)
+    {
+        cout << "Erreur SDL_CreateTextureFromSurface :" << SDL_GetError();
+        return EXIT_FAILURE;
+    }
+
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, 
+                                SDL_TEXTUREACCESS_TARGET, surface->w, surface->h);
+    if(NULL == texture) 
+    {
+        cout << "Erreur SDL_CreateTextureFromSurface :" << SDL_GetError();
+        return EXIT_FAILURE;
+    }
+    SDL_SetRenderTarget(renderer, texture); // La cible de rendu est maintenant texture. 
+    SDL_RenderCopy(renderer, tmp, NULL, NULL); // On copie tmp sur texture 
+    SDL_DestroyTexture(tmp);
+    SDL_FreeSurface(surface); */
 
     return EXIT_SUCCESS;
 }
 
 
 //Draw the playground
-void MainSDLWindow::Draw(int length, Segment* head){
+void MainSDLWindow::Draw(Segment *head){
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &map);
+    
+    this->Gfruit.x = fruit.GetX() * PIXELS;
+    this->Gfruit.y = fruit.GetY() * PIXELS;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &Gfruit);
+
+    //SDL_SetRenderTarget(renderer, NULL);
+
+    Ghead.x = head->GetX();
+    Ghead.y = head->GetY();
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, &Ghead);
+
     SDL_Rect Gbody;
-    Gbody.w = pixels;
-    Gbody.h = pixels;
-          
+    Gbody.w = PIXELS;
+    Gbody.h = PIXELS;
 
-    for (int i = 0; i < length; i++)
+    Segment *body;
+    body = head;
+    while (body->CheckNext())
     {
-        if (i == 0)
-        {
-            Ghead.x = head->GetX();
-            Ghead.y = head->GetY();
-            SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-            SDL_RenderFillRect(renderer, &Ghead);
-        }else{
-            Segment *temp = head->CheckNext(i, 0);
-
-            Gbody.x = temp->GetX();
-            Gbody.y = temp->GetY();
-            SDL_SetRenderDrawColor(renderer, 0, 200, 0, SDL_ALPHA_OPAQUE);
-            SDL_RenderFillRect(renderer, &Gbody);
-        }
+        body = body->GetNext();
+        Gbody.x = body->GetX();
+        Gbody.y = body->GetY();
+        SDL_SetRenderDrawColor(renderer, 0, 200, 0, SDL_ALPHA_OPAQUE);
+        SDL_RenderFillRect(renderer, &Gbody);
     }
 
     SDL_RenderPresent(renderer); //Refresh the renderer
@@ -90,13 +118,17 @@ bool MainSDLWindow::CheckFruit(){
 
     if (Ghead.x == Gfruit.x && Ghead.y == Gfruit.y)
     {
+        score += SCORE_TO_ADD;
         fruit.GenerateFruit();
-        Gfruit.x = fruit.GetX() * pixels;
-        Gfruit.y = fruit.GetY() * pixels;
-
+        Gfruit.x = fruit.GetX() * PIXELS;
+        Gfruit.y = fruit.GetY() * PIXELS;
         return true;
     }
     return false;
+}
+
+void MainSDLWindow::GenerateFruit(){
+    fruit.GenerateFruit();
 }
 
 //Quit the game
@@ -113,5 +145,5 @@ void MainSDLWindow::CheckForQuit(){
 
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
-int MainSDLWindow::GetPixels(){return pixels;}
-int MainSDLWindow::GetSquares(){return nbrSquare;}
+int MainSDLWindow::GetPixels(){return PIXELS;}
+int MainSDLWindow::GetSquares(){return SQUARES;}

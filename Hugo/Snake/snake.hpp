@@ -1,28 +1,34 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <bits/stdc++.h>
+#include <cstdlib>
+
+#define SQUARES 20
+#define ARRAY_SIZE (SQUARES-2)*(SQUARES-2)
 
 class Segment {
 public:
     Segment();
     ~Segment();
-    void AddSnake(int direction, int speed, int x, int y);
-    void Move();
-    void Init(int direction, int speed, int x, int y);
 
+    void Init(int direction, int x, int y);
+    void Move();
+    Segment *AddSnake(int direction, int x, int y);
+    void ResetBody();
+
+    bool CheckNext();
+    Segment *GetNext();
     int GetX();
     int GetY();
+
     void SetX(int newx);
     void SetY(int newy);
     void SetDirection(int nextDirection);
-    void ResetBody();
-    Segment* CheckNext(int length, int count);
 
 private:
     Segment *next;
     
     int direction, nextDirection;
-    int speed;
     int x, y;
 };
 
@@ -32,36 +38,33 @@ public:
     Snake();
     ~Snake();
 
-    void Init(int squares, int pixels);
-    void CheckDirection();
-    void CheckBorders();
     void Move();
     void Eat();
+    void CheckDirection();
+    bool CheckBorders();
+    void CheckCollision();
+    void UpdateCoords();
+    void PrintCoords();
     void Reset();
 
-    int GetDirection();
     int GetX();
     int GetY();
-    int GetLength();
-    Segment* GetHead();
-
-    void SetTail(Segment *tail);
+    Segment *GetHead();
 
 private:
-    Segment* head;
-    Segment* tail;
+    Segment *head;
+    Segment *tail;
 
     int length;
     int direction, newDirection;
-    int speed;
-    int playgroundLength, pixels;
+    int coords[ARRAY_SIZE][2];
 };
 
 
 class Fruit{
 public:
     Fruit();
-
+    
     void GenerateFruit();
 
     int GetX();
