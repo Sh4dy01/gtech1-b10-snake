@@ -20,7 +20,6 @@ MainSDLWindow::MainSDLWindow(){
 
     this->Gfruit.w = PIXELS;
     this->Gfruit.h = PIXELS;
-
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -77,15 +76,15 @@ int MainSDLWindow::Init(){
 
 
 //Draw the playground
-void MainSDLWindow::Draw(Segment *head){
+void MainSDLWindow::Draw(Segment *head, Fruit *fruit){
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &map);
     
-    this->Gfruit.x = fruit.GetX() * PIXELS;
-    this->Gfruit.y = fruit.GetY() * PIXELS;
+    this->Gfruit.x = fruit->GetX() * PIXELS;
+    this->Gfruit.y = fruit->GetY() * PIXELS;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &Gfruit);
 
@@ -114,22 +113,6 @@ void MainSDLWindow::Draw(Segment *head){
     SDL_RenderPresent(renderer); //Refresh the renderer
 }
 
-bool MainSDLWindow::CheckFruit(){
-
-    if (Ghead.x == Gfruit.x && Ghead.y == Gfruit.y)
-    {
-        score += SCORE_TO_ADD;
-        fruit.GenerateFruit();
-        Gfruit.x = fruit.GetX() * PIXELS;
-        Gfruit.y = fruit.GetY() * PIXELS;
-        return true;
-    }
-    return false;
-}
-
-void MainSDLWindow::GenerateFruit(){
-    fruit.GenerateFruit();
-}
 
 //Quit the game
 void MainSDLWindow::CheckForQuit(){

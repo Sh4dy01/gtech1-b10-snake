@@ -3,8 +3,17 @@
 #include <bits/stdc++.h>
 #include <cstdlib>
 
-#define SQUARES 20
-#define ARRAY_SIZE (SQUARES-2)*(SQUARES-2)
+#define SQUARES 6
+#define ARRAY_SIZE ((SQUARES-2)*(SQUARES-2))
+#define SCORE_TO_ADD 10
+#define SPEED 2
+
+#define UP 1
+#define DOWN -1
+#define RIGHT 2
+#define LEFT -2
+#define PAUSE 0
+
 
 class Segment {
 public:
@@ -32,6 +41,20 @@ private:
     int x, y;
 };
 
+class Fruit{
+public:
+    Fruit();
+    
+    void GenerateFruit();
+    void GenerateFruit(int exclude[][2], int length);
+
+    int GetX();
+    int GetY();
+
+private:
+    int x,y;
+};
+
 
 class Snake {
 public:
@@ -41,35 +64,26 @@ public:
     void Move();
     void Eat();
     void CheckDirection();
-    bool CheckBorders();
+    void CheckBorders();
     void CheckCollision();
+    void CheckFruit();
     void UpdateCoords();
-    void PrintCoords();
+    void Debug();
     void Reset();
 
     int GetX();
     int GetY();
     Segment *GetHead();
+    Fruit *GetFruit();
 
 private:
     Segment *head;
+    Segment *startCol;
     Segment *tail;
+    Fruit *fruit;
 
     int length;
     int direction, newDirection;
     int coords[ARRAY_SIZE][2];
-};
-
-
-class Fruit{
-public:
-    Fruit();
-    
-    void GenerateFruit();
-
-    int GetX();
-    int GetY();
-
-private:
-    int x,y;
+    int score;
 };

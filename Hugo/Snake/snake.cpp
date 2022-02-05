@@ -1,57 +1,61 @@
 #include "snake.hpp"
 #include "playground.hpp"
 
-#define UP 1
-#define DOWN -1
-#define RIGHT 2
-#define LEFT -2
-
 Snake::Snake(){
     this->length = 1;
-    this->direction, this->newDirection = 0;
+    this->direction = this->newDirection = this->score = 0;
 
     head = new Segment();
-    this->head->SetX(SCREEN_SIZE / 2 - PIXELS);
+
+    this->head->SetX(SQUARES / 2 * PIXELS - PIXELS);
     this->head->SetY(this->GetX());
     this->head->Init(direction, this->GetX(), this->GetY());
     this->tail = head;
+    this->startCol = NULL;
+
+    fruit = new Fruit();
 }
 
 Snake::~Snake(){
-    delete head;
+    delete head, fruit, tail, startCol;
 }
 
 // Change la direction du snake si appuie d'une des flèches directionnelles
 void Snake::CheckDirection(){
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 
-    if (keystates[SDL_SCANCODE_UP]){
+    if (keystates[SDL_SCANCODE_UP] && direction != DOWN){
         newDirection = UP;
     }
-    else if (keystates[SDL_SCANCODE_DOWN]){
+    else if (keystates[SDL_SCANCODE_DOWN] && direction != UP){
         newDirection = DOWN;
     }
-    else if (keystates[SDL_SCANCODE_LEFT]){
+    else if (keystates[SDL_SCANCODE_LEFT] && direction != RIGHT){
         newDirection = LEFT;
     }
-    else if (keystates[SDL_SCANCODE_RIGHT]){
+    else if (keystates[SDL_SCANCODE_RIGHT] && direction != LEFT){
         newDirection = RIGHT;
     }
-
+    else if (keystates[SDL_SCANCODE_SPACE]){
+        newDirection = PAUSE;
+    }
 
     if (head->GetX() % PIXELS == 0 && head->GetY() % PIXELS == 0)
     {
-        if (direction != -newDirection){direction = newDirection;}
+        direction = newDirection;
         head->SetDirection(direction);
     }
 }
 
 void Snake::Move(){
     CheckDirection();
-
-    head->Move();
-
-    UpdateCoords();
+    if (direction != PAUSE)
+    {
+        head->Move();
+        CheckCollision();
+        CheckBorders();
+        CheckFruit();
+    }
 }
 
 // Met à jour les coordonnées de chaque partie du segment
@@ -65,82 +69,101 @@ void Snake::UpdateCoords(){
         body = body->GetNext(); //fin d'itération
         position++;
     } while (body != NULL);
+    Debug();
 }
 
 // Affiche les coordonnées de chaque partie du serpent
-void Snake::PrintCoords(){
+void Snake::Debug(){
     for (int i = 0; i < length; i++)
     {
-        cout << "i:" << i << "\n";
+        cout << "Segment: " << i+1 << "\n";
         cout << "X:" << coords[i][0] << ", ";
         cout << "Y:" << coords[i][1] << "\n\n";
     }
 }
 
 // Vérifie si la tête touche une des bordures de la zone de jeu et recommence la partie à zero.
-bool Snake::CheckBorders(){
+void Snake::CheckBorders(){
     if (head->GetX() > SCREEN_SIZE - PIXELS * 2)
     {
         Reset();
-        return true;
     }
     else if (head->GetX() < 0 + PIXELS)
     {
         Reset();
-        return true;
     }
     else if (head->GetY() > SCREEN_SIZE - PIXELS * 2)
     {
         Reset();
-        return true;
     }
     else if (head->GetY() < 0 + PIXELS)
     {
         Reset();
-        return true;
     }
-
-    return false;
 }
 
 void Snake::CheckCollision(){
-    if (length > 3){
-        Segment *body = head->GetNext();
-
-        if (head->GetX() == body->GetX() && head->GetY() == body->GetY()){
-            /* code */
-        }
+    if (length > 4)
+    {
+        Segment *checkCol = startCol;
+        do
+        {
+            if (head->GetX() == checkCol->GetX() && head->GetY() == checkCol->GetY()) 
+            {
+                Reset();
+                break;
+            }
+            checkCol = checkCol->GetNext();
+        }while (checkCol != NULL);
     }
 }
 
 // Restaure les variables par défaut
 void Snake::Reset(){
     length = 1;
-    direction = 0;
-    newDirection = 0;
+    direction = newDirection = score = 0;
 
     head->ResetBody();
     head->SetX(SCREEN_SIZE / 2 - PIXELS);
     head->SetY(head->GetX());
-    tail=head;
-    
-    for (int i = 0; i < length; i++)
-    {
-        coords[i][0] = 0;
-        coords[i][1] = 0;
-    }
+
+    startCol = NULL;
+    tail = head;
+    fruit->GenerateFruit();
+
+    UpdateCoords();
 }
 
 // Agrandie le serpent
 void Snake::Eat(){
-    if (head != NULL)
+    length += 1;
+    tail = tail->AddSnake(this->direction, tail->GetX(), tail->GetY());
+    if (length == 5)
     {
-        tail = tail->AddSnake(this->direction, this->GetX(), this->GetY());
-        length+=1;
+        startCol = tail;
+    }
+    UpdateCoords();
+}
+
+void Snake::CheckFruit(){
+    if (head->GetX() / PIXELS == fruit->GetX() && head->GetY() / PIXELS == fruit->GetY())
+    {
+        score += SCORE_TO_ADD;
+        Eat();
+
+        int excludeCoords[length][2];
+        for (int i = 0; i < length; i++)
+        {
+            excludeCoords[i][0] = coords[i][0];
+            excludeCoords[i][1] = coords[i][1];
+        }
+
+        fruit->GenerateFruit(excludeCoords, length);
     }
 }
 
-Segment* Snake::GetHead(){return head;}
+Segment *Snake::GetHead(){return head;}
+Fruit *Snake::GetFruit(){return fruit;}
 int Snake::GetX(){return head->GetX();}
 int Snake::GetY(){return head->GetY();}
 
@@ -225,7 +248,7 @@ void Segment::SetDirection(int nextDirection){
     this->nextDirection = nextDirection;
     if (next != NULL)
     {
-        this->next->SetDirection(direction);
+        next->SetDirection(direction);
     }
 }
 
@@ -234,7 +257,7 @@ void Segment::ResetBody(){
     {
         delete next;
     }
-    next = NULL;
+    this->next = NULL;
 }
 
 bool Segment::CheckNext(){return (next != NULL) ? true : false;}
@@ -255,8 +278,32 @@ Fruit::Fruit(){
 }
 
 void Fruit::GenerateFruit(){
-    x = rand() % (SQUARES-2) + 1;
-    y = rand() % (SQUARES-2) + 1;
+    this->x = rand() % (SQUARES-2) + 1;
+    this->y = rand() % (SQUARES-2) + 1;
+}
+
+void Fruit::GenerateFruit(int excludeCoords[][2], int length){
+
+    int tempX = rand() % (SQUARES-2) + 1;
+    int tempY = rand() % (SQUARES-2) + 1;
+
+    for (int i = 0; i < length; i++)
+    {
+        if (tempX == excludeCoords[i][0] && tempY == excludeCoords[i][1])
+        {
+            cout << "BTemp: " << tempX << ", " << tempY << "\n";
+            tempX = rand() % (SQUARES-2) + 1;
+            tempY = rand() % (SQUARES-2) + 1;
+
+            cout << "ATemp: " << tempX << ", " << tempY << "\n";
+            i = 0;
+        }
+    }
+    
+    this->x = tempX;
+    this->y = tempY;
+
+    cout << "Fruit: " << x << ", " << y << "\n";
 }
 
 int Fruit::GetX(){return x;}

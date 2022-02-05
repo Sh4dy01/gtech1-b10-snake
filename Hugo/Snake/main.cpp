@@ -3,8 +3,6 @@
 
 int main()
 {
-    srand (time(NULL)); //New seed for generating random numbers
-    
     Uint32 frame_start;
     int frame_delay;
 
@@ -19,10 +17,8 @@ int main()
 
         main_window.CheckForQuit(); //Click X to quit the game
         snake.Move();
-        if(snake.CheckBorders()) {main_window.GenerateFruit();}
-        if(main_window.CheckFruit()) {snake.Eat();}
         
-        main_window.Draw(snake.GetHead()); //Draw everything
+        main_window.Draw(snake.GetHead(), snake.GetFruit()); //Draw everything
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}
