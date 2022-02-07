@@ -1,36 +1,70 @@
 #pragma once
 
-//#include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 
 class Segment {
+public:
+    Segment();
+    ~Segment();
+    void AddSnake(int direction, int speed);
+    void Move();
+    void Init(int direction, int speed);
+
+    int GetX();
+    int GetY();
+    void SetX(int newx);
+    void SetY(int newy);
+    void SetDirection(int nextDirection);
+    void ResetBody();
 private:
     Segment *next;
-};
-
-class Snake {
-public:
-    Snake();
-    void CheckDirection();
-    void Move(int newx, int newy);
-    void Eat();
-    void Draw();
-    void Print();
-
-    SDL_Rect GetHead();
-private:
-    Segment* head;
-    int direction;
+    
+    int direction, nextDirection;
+    int speed;
     int x, y;
 };
 
 
+class Snake {
+public:
+    Snake();
+    ~Snake();
 
-class Fruit{ 
+    void Init(int squares, int pixels);
+    void CheckDirection();
+    void CheckBorders();
+    void Move();
+    void Eat();
+    void Reset();
+
+    int GetDirection();
+    int GetX();
+    int GetY();
+    int GetLength();
+    int GetScore();
+    void SetTail(Segment *tail);
+
+private:
+    Segment* head;
+    Segment* tail;
+
+    int length;
+    int direction, newDirection;
+    int speed;
+    int playgroundLength, pixels;
+    int score;
+};
+
+
+class Fruit{
 public:
     Fruit();
 
-    int *GenerateFruit();
+    void GenerateFruit();
+
+    int GetX();
+    int GetY();
+
 private:
-    Segment* fruit;
-    int pos[2];
+    int x,y;
 };

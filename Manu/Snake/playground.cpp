@@ -2,7 +2,7 @@
 
 MainSDLWindow::MainSDLWindow(){
     this->window,renderer = NULL;
-    
+    scoreText = "SCORE : 0";
     this->nbrSquare = 20;
     this->pixels = 32;
     this->width = nbrSquare * pixels;
@@ -29,6 +29,8 @@ MainSDLWindow::MainSDLWindow(){
 MainSDLWindow::~MainSDLWindow(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_FreeSurface(scoreSurface);
+    SDL_DestroyTexture(scoreTexture);
     SDL_Quit();
 }
 
@@ -46,43 +48,51 @@ int MainSDLWindow::Init(){
         cout << "Erreur lors de la creation du rendu:" << SDL_GetError();
         return EXIT_FAILURE;
     }
-
-     //Inititialisation du texte
     if(TTF_Init() == -1){
-        fprintf(stderr, "erreur d'initialisation de TTF_init : %s\n", TTF_GetError());
-        exit(EXIT_FAILURE);
-
+    cout << "Erreur d'initialisation de Font :" << TTF_GetError();
+    return EXIT_FAILURE;
     };
 
-    return EXIT_SUCCESS;
+    font = TTF_OpenFont("ARIAL.TTF", 50);
 
+	couleurScore = {255, 255, 255};
+	scoreSurface = TTF_RenderText_Solid(font, scoreText, couleurScore) ;
+
+    if(scoreSurface == NULL){
+        cout << "Erreur de rendu :" << TTF_GetError();
+        return EXIT_FAILURE;
+    }
+
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+
+    SDL_Rect score_area;
+    score_area.x = 0;
+    score_area.y = 0;
+    score_area.w = scoreSurface->w;
+    score_area.h = scoreSurface->h;
+
+    return EXIT_SUCCESS;
 }
 
 
 //Draw the playground
-void MainSDLWindow::Draw(){
+void MainSDLWindow::Draw(int score){
+    string s = to_string(score);
+    scoreText = s.str();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-
-    SDL_RenderPresent(renderer); //Refresh the renderer
+    scoreSurface = TTF_RenderText_Solid(font, scoreText, couleurScore);
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreArea);
+    SDL_RenderPresent(renderer);
 }
 
-void MainSDLWindow::AddSnake(){
-    
-}
 
 //affichage du score 
 void MainSDLWindow::score(){
 
-    TTF_Font* font = NULL;
-    font = TTF_OpenFont("Fonts/Arial/Arial.ttf", 12);
-    
-	SDL_Color couleur = {255, 255, 255};
-	SDL_Surface* texte = TTF_RenderText_Blended(font, "test", couleur) ;
 
-	SDL_FreeSurface(texte); 
-	TTF_CloseFont(font);
-    
+
 };
 
 //Quit the game

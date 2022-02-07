@@ -17,7 +17,7 @@ class MainSDLWindow{
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
-    void Draw();
+    void Draw(int score);
     void CheckForQuit();
     void AddSnake();
     void score();
@@ -39,5 +39,11 @@ class MainSDLWindow{
     SDL_Rect fruit;
     SDL_Rect head;
     SDL_Rect segment;
+    SDL_Rect scoreArea;
+    SDL_Surface *scoreSurface;
+    TTF_Font* font;
+    SDL_Color couleurScore;
+    SDL_Texture *scoreTexture;
+    char *scoreText;
     Uint32 frame_rate;
 };
