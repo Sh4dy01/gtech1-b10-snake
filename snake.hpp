@@ -46,7 +46,7 @@ public:
     Fruit();
     
     void GenerateFruit();
-    void GenerateFruit(int coordsToExclude[][2], int length);
+    void GenerateFruit(Segment *head);
 
     int GetX();
     int GetY();

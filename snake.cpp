@@ -150,15 +150,7 @@ void Snake::CheckFruit(){
     {
         score += SCORE_TO_ADD;
         Eat();
-
-        int excludeCoords[length][2];
-        for (int i = 0; i < length; i++)
-        {
-            excludeCoords[i][0] = coordsArray[i][0];
-            excludeCoords[i][1] = coordsArray[i][1];
-        }
-
-        fruit->GenerateFruit(excludeCoords, length);
+        fruit->GenerateFruit(head);
     }
 }
 
@@ -282,24 +274,29 @@ void Fruit::GenerateFruit(){
     this->y = rand() % (SQUARES-2) + 1;
 }
 
-void Fruit::GenerateFruit(int excludeCoords[][2], int length){
-
+void Fruit::GenerateFruit(Segment *head){
+    int sameCoord = true;
     int tempX = rand() % (SQUARES-2) + 1;
     int tempY = rand() % (SQUARES-2) + 1;
 
-    for (int i = 0; i < length; i++)
+    while (sameCoord == true)
     {
-        if (tempX == excludeCoords[i][0] && tempY == excludeCoords[i][1])
+        Segment *body = head;
+        do
         {
-            cout << "BTemp: " << tempX << ", " << tempY << "\n";
-            tempX = rand() % (SQUARES-2) + 1;
-            tempY = rand() % (SQUARES-2) + 1;
+            if (tempX == body->GetX() / PIXELS && tempY == body->GetY() / PIXELS)
+            {
+                sameCoord = true;
+                tempX = rand() % (SQUARES-2) + 1;
+                tempY = rand() % (SQUARES-2) + 1;
 
-            cout << "ATemp: " << tempX << ", " << tempY << "\n";
-            i = 0;
-        }
+                break;
+            }else{sameCoord = false;}
+            body = body->GetNext();
+            
+        } while (body != NULL);
     }
-    
+
     this->x = tempX;
     this->y = tempY;
 
