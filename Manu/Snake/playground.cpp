@@ -2,29 +2,35 @@
 
 MainSDLWindow::MainSDLWindow(){
     this->window,renderer = NULL;
-    
+    scoreText = "SCORE : 0";
     this->nbrSquare = 20;
     this->pixels = 32;
     this->width = nbrSquare * pixels;
     this->height = width;
     this->IsGameRunning = true;
     this->frame_rate = 20;
-    this->dir = 0;
 
-    this->playground.h = width - pixels * 2;
-    this->playground.w = playground.h;
-    this->playground.x = pixels;
-    this->playground.y = playground.x;
+    this->map.h = width - pixels * 2;
+    this->map.w = map.h;
+    this->map.x = pixels;
+    this->map.y = map.x;
 
-    this->rect.x = width/2;
-    this->rect.y = height/2;
-    this->rect.w = pixels;
-    this->rect.h = pixels;
+    this->head.h = pixels;
+    this->head.w = pixels,
+    this->head.x = (width - pixels * 2) / 2;
+    this->head.y = head.x;
+
+    this->fruit.h = pixels;
+    this->fruit.w = pixels;
+    this->fruit.x = 0;
+    this->fruit.y = 0;
 }
 
 MainSDLWindow::~MainSDLWindow(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    SDL_FreeSurface(scoreSurface);
+    SDL_DestroyTexture(scoreTexture);
     SDL_Quit();
 }
 
@@ -42,19 +48,52 @@ int MainSDLWindow::Init(){
         cout << "Erreur lors de la creation du rendu:" << SDL_GetError();
         return EXIT_FAILURE;
     }
+    if(TTF_Init() == -1){
+    cout << "Erreur d'initialisation de Font :" << TTF_GetError();
+    return EXIT_FAILURE;
+    };
+
+    font = TTF_OpenFont("ARIAL.TTF", 50);
+
+	couleurScore = {255, 255, 255};
+	scoreSurface = TTF_RenderText_Solid(font, scoreText, couleurScore) ;
+
+    if(scoreSurface == NULL){
+        cout << "Erreur de rendu :" << TTF_GetError();
+        return EXIT_FAILURE;
+    }
+
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+
+    SDL_Rect score_area;
+    score_area.x = 0;
+    score_area.y = 0;
+    score_area.w = scoreSurface->w;
+    score_area.h = scoreSurface->h;
 
     return EXIT_SUCCESS;
 }
 
+
 //Draw the playground
-void MainSDLWindow::Draw(){
+void MainSDLWindow::Draw(int score){
+    string s = to_string(score);
+    scoreText = s.str();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &playground);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &rect);
+    scoreSurface = TTF_RenderText_Solid(font, scoreText, couleurScore);
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreArea);
+    SDL_RenderPresent(renderer);
 }
+
+
+//affichage du score 
+void MainSDLWindow::score(){
+
+
+
+};
 
 //Quit the game
 void MainSDLWindow::CheckForQuit(){
@@ -64,10 +103,16 @@ void MainSDLWindow::CheckForQuit(){
     while(SDL_PollEvent(&event)){
         if(event.type == SDL_QUIT){
             IsGameRunning = false;
+            TTF_Quit();
         }
     }
 }
 
+
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
 int MainSDLWindow::GetFrameRate(){return frame_rate;}
+SDL_Rect MainSDLWindow::GetSnake(){return head;}
+
+void MainSDLWindow::SetSnake(SDL_Rect snake){head = snake;}
+
