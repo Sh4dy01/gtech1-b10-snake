@@ -14,27 +14,19 @@ using namespace std;
 
 class MainSDLWindow{
 
-    public:
+public:
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
     void Draw(Segment *head, Fruit *fruit);
     void CheckForQuit();
-    void AddSnake();
-    void CheckBorders();
-    void GenerateFruit();
 
     SDL_Renderer *GetRenderer();
     bool GetGameState();
-    int GetFrameRate();
-    int GetPixels();
-    int GetSquares();
 
-    private:
-    int width, height;
-    int score;
+private:
     bool IsGameRunning;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    SDL_Rect map, Ghead, Gfruit;
+    SDL_Rect map, square;
 };

@@ -46,7 +46,7 @@ public:
     Fruit();
     
     void GenerateFruit();
-    void GenerateFruit(int exclude[][2], int length);
+    void GenerateFruit(Segment *head);
 
     int GetX();
     int GetY();
@@ -84,6 +84,6 @@ private:
 
     int length;
     int direction, newDirection;
-    int coords[ARRAY_SIZE][2];
+    int coordsArray[ARRAY_SIZE][2];
     int score;
 };

@@ -1,0 +1,114 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class Fruit {
+	+Fruit()
+	+GetX() : int
+	+GetY() : int
+	-x : int
+	-y : int
+	+GenerateFruit() : void
+	+GenerateFruit(int coordsToExclude, int length) : void
+}
+
+
+class MainSDLWindow {
+	+MainSDLWindow()
+	+~MainSDLWindow()
+	-map : SDL_Rect
+	-square : SDL_Rect
+	+GetRenderer() : SDL_Renderer*
+	-renderer : SDL_Renderer*
+	-window : SDL_Window*
+	+GetGameState() : bool
+	-IsGameRunning : bool
+	+Init() : int
+	+CheckForQuit() : void
+	+Draw(Segment* head, Fruit* fruit) : void
+}
+
+
+class Segment {
+	+Segment()
+	+~Segment()
+	+AddSnake(int direction, int x, int y) : Segment*
+	+GetNext() : Segment*
+	-next : Segment*
+	+CheckNext() : bool
+	+GetX() : int
+	+GetY() : int
+	-direction : int
+	-nextDirection : int
+	-x : int
+	-y : int
+	+Init(int direction, int x, int y) : void
+	+Move() : void
+	+ResetBody() : void
+	+SetDirection(int nextDirection) : void
+	+SetX(int newx) : void
+	+SetY(int newy) : void
+}
+
+
+class Snake {
+	+Snake()
+	+~Snake()
+	+GetFruit() : Fruit*
+	-fruit : Fruit*
+	+GetHead() : Segment*
+	-head : Segment*
+	-startCol : Segment*
+	-tail : Segment*
+	+GetX() : int
+	+GetY() : int
+	-coordsArray : int
+	-direction : int
+	-length : int
+	-newDirection : int
+	-score : int
+	+CheckBorders() : void
+	+CheckCollision() : void
+	+CheckDirection() : void
+	+CheckFruit() : void
+	+Debug() : void
+	+Eat() : void
+	+Move() : void
+	+Reset() : void
+	+UpdateCoords() : void
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+.Segment o-- .Segment
+
+
+.Snake o-- .Fruit
+
+
+.Snake "3" o-- .Segment
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
+

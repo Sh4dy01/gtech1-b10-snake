@@ -4,22 +4,15 @@ MainSDLWindow::MainSDLWindow(){
     this->window = NULL;
     this->renderer = NULL;
     
-    this->width = SQUARES * PIXELS;
-    this->height = width;
     this->IsGameRunning = true;
 
-    this->map.h = width - PIXELS * 2;
+    this->map.h = SCREEN_SIZE - PIXELS * 2;
     this->map.w = map.h;
     this->map.x = PIXELS;
     this->map.y = map.x;
 
-    this->Ghead.h = PIXELS;
-    this->Ghead.w = PIXELS,
-    this->Ghead.x = SQUARES / 2 * PIXELS;
-    this->Ghead.y = Ghead.x;
-
-    this->Gfruit.w = PIXELS;
-    this->Gfruit.h = PIXELS;
+    this->square.w = PIXELS;
+    this->square.h = square.w;
 }
 
 MainSDLWindow::~MainSDLWindow(){
@@ -29,7 +22,7 @@ MainSDLWindow::~MainSDLWindow(){
 
 int MainSDLWindow::Init(){
     //Création de la fenêtre
-    window = SDL_CreateWindow("Snake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("Snake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE, SCREEN_SIZE, SDL_WINDOW_RESIZABLE);
     if (window == NULL){
         cout << "Erreur lors de la creation de la fenêtre:" << SDL_GetError();
         return EXIT_FAILURE;
@@ -83,31 +76,27 @@ void MainSDLWindow::Draw(Segment *head, Fruit *fruit){
     SDL_SetRenderDrawColor(renderer, 75, 75, 75, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &map);
     
-    this->Gfruit.x = fruit->GetX() * PIXELS;
-    this->Gfruit.y = fruit->GetY() * PIXELS;
+    square.x = fruit->GetX() * PIXELS;
+    square.y = fruit->GetY() * PIXELS;
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &Gfruit);
+    SDL_RenderFillRect(renderer, &square);
 
     //SDL_SetRenderTarget(renderer, NULL);
 
-    Ghead.x = head->GetX();
-    Ghead.y = head->GetY();
+    square.x = head->GetX();
+    square.y = head->GetY();
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &Ghead);
-
-    SDL_Rect Gbody;
-    Gbody.w = PIXELS;
-    Gbody.h = PIXELS;
+    SDL_RenderFillRect(renderer, &square);
 
     Segment *body;
     body = head;
     while (body->CheckNext())
     {
         body = body->GetNext();
-        Gbody.x = body->GetX();
-        Gbody.y = body->GetY();
+        square.x = body->GetX();
+        square.y = body->GetY();
         SDL_SetRenderDrawColor(renderer, 0, 200, 0, SDL_ALPHA_OPAQUE);
-        SDL_RenderFillRect(renderer, &Gbody);
+        SDL_RenderFillRect(renderer, &square);
     }
 
     SDL_RenderPresent(renderer); //Refresh the renderer
@@ -128,5 +117,3 @@ void MainSDLWindow::CheckForQuit(){
 
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
-int MainSDLWindow::GetPixels(){return PIXELS;}
-int MainSDLWindow::GetSquares(){return SQUARES;}
