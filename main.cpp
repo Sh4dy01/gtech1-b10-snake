@@ -1,5 +1,5 @@
-#include "playground.cpp"
-#include "snake.cpp"
+#include "playground.hpp"
+#include "snake.hpp"
 
 int main()
 {
@@ -18,7 +18,7 @@ int main()
         main_window.CheckForQuit(); //Click X to quit the game
         snake.Move();
         
-        main_window.Draw(snake.GetHead(), snake.GetFruit()); //Draw everything
+        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetScore()); //Draw everything
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}

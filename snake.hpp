@@ -1,12 +1,9 @@
 #pragma once
 
-#include <bits/stdc++.h>
-#include <cstdlib>
-
-#define SQUARES 6
-#define ARRAY_SIZE ((SQUARES-2)*(SQUARES-2))
 #define SCORE_TO_ADD 10
-#define SPEED 2
+#define SPEED 4
+#define SQUARES 20
+#define ARRAY_SIZE ((SQUARES-2)*(SQUARES-2))
 
 #define UP 1
 #define DOWN -1
@@ -27,6 +24,7 @@ public:
 
     bool CheckNext();
     Segment *GetNext();
+    int GetDirection();
     int GetX();
     int GetY();
 
@@ -73,6 +71,7 @@ public:
 
     int GetX();
     int GetY();
+    int GetScore();
     Segment *GetHead();
     Fruit *GetFruit();
 

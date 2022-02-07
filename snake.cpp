@@ -1,5 +1,5 @@
-#include "snake.hpp"
 #include "playground.hpp"
+#include <iostream>
 
 Snake::Snake(){
     this->length = 1;
@@ -156,6 +156,7 @@ void Snake::CheckFruit(){
 
 Segment *Snake::GetHead(){return head;}
 Fruit *Snake::GetFruit(){return fruit;}
+int Snake::GetScore(){return score;}
 int Snake::GetX(){return head->GetX();}
 int Snake::GetY(){return head->GetY();}
 
@@ -257,6 +258,7 @@ bool Segment::CheckNext(){return (next != NULL) ? true : false;}
 int Segment::GetX(){return x;}
 int Segment::GetY(){return y;}
 Segment *Segment::GetNext(){return next;}
+int Segment::GetDirection(){return direction;}
 
 void Segment::SetX(int newx){this->x = newx;}
 void Segment::SetY(int newy){this->y = newy;}
