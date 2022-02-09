@@ -15,13 +15,12 @@ int main()
     do{
         frame_start = SDL_GetTicks();
 
-        main_window.CheckForQuit(); //Click X to quit the game
+        main_window.CheckForQuit();
         snake.Move();
-        
-        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetScore()); //Draw everything
+        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallCount(), snake.GetLength(), snake.GetScore()); //Draw everything
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}
         
-    }while(main_window.GetGameState());
+    }while(main_window.GetGameState() && snake.GetLength() < MAX_LENGTH);
 }

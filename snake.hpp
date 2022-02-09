@@ -2,8 +2,9 @@
 
 #define SCORE_TO_ADD 10
 #define SPEED 4
-#define SQUARES 20
-#define ARRAY_SIZE ((SQUARES-2)*(SQUARES-2))
+#define SQUARES 10
+#define MAX_LENGTH ((SQUARES-2)*(SQUARES-2))
+#define SET 7
 
 #define UP 1
 #define DOWN -1
@@ -42,15 +43,25 @@ private:
 class Fruit{
 public:
     Fruit();
-    
-    void GenerateFruit();
-    void GenerateFruit(Segment *head);
+    ~Fruit();
 
+    Fruit *GenerateFruit();
+    void GenerateFruitCoord(Segment *head, Fruit *fruit);
+    void ResetFruits();
+
+    bool CheckNext();
+
+    bool GetMalus();
     int GetX();
     int GetY();
+    Fruit *GetNext();
+
+    void SetMalus();
 
 private:
     int x,y;
+    bool malus;
+    Fruit *next;
 };
 
 
@@ -72,6 +83,9 @@ public:
     int GetX();
     int GetY();
     int GetScore();
+    int GetLength();
+    int GetBallCount();
+    int GetTurn();
     Segment *GetHead();
     Fruit *GetFruit();
 
@@ -81,8 +95,7 @@ private:
     Segment *tail;
     Fruit *fruit;
 
-    int length;
+    int length, score, ballCount, turn;
     int direction, newDirection;
-    int coordsArray[ARRAY_SIZE][2];
-    int score;
+    int coordsArray[MAX_LENGTH][2];
 };

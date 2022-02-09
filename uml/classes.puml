@@ -13,7 +13,7 @@ class Fruit {
 	-x : int
 	-y : int
 	+GenerateFruit() : void
-	+GenerateFruit(int coordsToExclude, int length) : void
+	+GenerateFruit(Segment* head) : void
 }
 
 
@@ -21,15 +21,25 @@ class MainSDLWindow {
 	+MainSDLWindow()
 	+~MainSDLWindow()
 	-map : SDL_Rect
+	-scoreArea : SDL_Rect
 	-square : SDL_Rect
 	+GetRenderer() : SDL_Renderer*
 	-renderer : SDL_Renderer*
+	-scoreSurface : SDL_Surface*
+	- : SDL_Texture*
+	- : SDL_Texture*
+	-headText : SDL_Texture*
+	-scoreText : SDL_Texture*
+	-tailText : SDL_Texture*
+	- : SDL_Texture**
+	- : SDL_Texture**
 	-window : SDL_Window*
+	-font : TTF_Font*
 	+GetGameState() : bool
 	-IsGameRunning : bool
 	+Init() : int
 	+CheckForQuit() : void
-	+Draw(Segment* head, Fruit* fruit) : void
+	+Draw(Segment* head, int fruitX, int fruitY, int length, int score) : void
 }
 
 
@@ -40,6 +50,7 @@ class Segment {
 	+GetNext() : Segment*
 	-next : Segment*
 	+CheckNext() : bool
+	+GetDirection() : int
 	+GetX() : int
 	+GetY() : int
 	-direction : int
@@ -64,6 +75,8 @@ class Snake {
 	-head : Segment*
 	-startCol : Segment*
 	-tail : Segment*
+	+GetLength() : int
+	+GetScore() : int
 	+GetX() : int
 	+GetY() : int
 	-coordsArray : int
