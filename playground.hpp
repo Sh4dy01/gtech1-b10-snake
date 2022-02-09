@@ -6,10 +6,6 @@
 
 #include "snake.hpp"
 
-#define PIXELS 32
-#define SCREEN_SIZE (PIXELS * SQUARES)
-#define FRAME_RATE 20
-
 using namespace std;
 
 class MainSDLWindow{
@@ -18,16 +14,23 @@ public:
     MainSDLWindow();
     ~MainSDLWindow();
     int Init();
-    void Draw(Segment *head, Fruit *fruits, int length, int ballCount, int score);
+    void Draw(Segment *head, Fruit *fruits, bool ballStars[SET], int length, int score);
     void CheckForQuit();
     SDL_Texture *CreateTextureFromImage(const char path[]);
-    void DrawScore(int score, const char name[]);
+    void DrawText(const char name[]);
+    void DrawText(const char name[], int score);
+    void SetBallTexture(int star);
+    void DrawSet(int star);
 
     SDL_Renderer *GetRenderer();
     bool GetGameState();
+    bool GetIfWon();
+
+    void CheckIfWon(int length, int turn);
 
 private:
     bool IsGameRunning;
+    bool IsGameWon;
     int highScore, ballCount;
     const char *scoreText;
 

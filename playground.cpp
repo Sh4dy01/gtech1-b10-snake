@@ -9,6 +9,7 @@ MainSDLWindow::MainSDLWindow(){
     this->highScore = 0;
     this->ballCount = -1;
     this->IsGameRunning = true;
+    this->IsGameWon = false;
 
     this->map.h = SCREEN_SIZE - PIXELS * 2;
     this->map.w = map.h;
@@ -41,13 +42,9 @@ int MainSDLWindow::Init(){
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
         return EXIT_FAILURE;
     }
-    if(TTF_Init() == -1){
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
-        return EXIT_FAILURE;
-    };
 
     // --- Create the window --- //
-    window = SDL_CreateWindow("Snake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE, SCREEN_SIZE, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow(NAME_OF_THE_GAME, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE, SCREEN_SIZE, SDL_WINDOW_RESIZABLE);
     if (window == NULL){
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
         return EXIT_FAILURE;
@@ -66,6 +63,10 @@ int MainSDLWindow::Init(){
     tailTexture = CreateTextureFromImage("textures/tail.bmp");
     mBallTexture = CreateTextureFromImage("textures/mBall.bmp");
 
+    if(TTF_Init() == -1){
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError());
+        return EXIT_FAILURE;
+    };
     font = TTF_OpenFont("ARIAL.TTF", 32);
     if (font == NULL)
     {
@@ -73,34 +74,30 @@ int MainSDLWindow::Init(){
         return EXIT_FAILURE;
     }
 
+    DrawText(BASE_HIGHSCORE_TEXT, highScore);
+
     return EXIT_SUCCESS;
 }
 
 // Draw everything
-void MainSDLWindow::Draw(Segment *head, Fruit *fruits, int ballCount, int length, int score){
+void MainSDLWindow::Draw(Segment *head, Fruit *fruits, bool ballStars[SET], int length, int score){
     int angle = 0;
 
-    if (ballCount != this->ballCount && ballCount < SET)
-    {
-        this->ballCount = ballCount;
-        ballString = "textures/ball" + to_string(ballCount + 1) + ".bmp";
-        const char *ballStar = ballString.c_str();
-        ballTexture = CreateTextureFromImage(ballStar);
-    }
+    SetBallTexture(fruits->GetStar());
     
     if (score >= highScore) { highScore = score; }
-
+    
     // --- White background & draw the playground color --- //
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 79, 124, 187, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &map);
 
-    // --- Draw scores --- //
-    DrawScore(score, "Score: ");
-    DrawScore(highScore, "Highscore: ");
+    // --- Draw Texts --- //
+    DrawText(BASE_SCORE_TEXT, score);
+    DrawText(BASE_HIGHSCORE_TEXT, highScore);
 
-    // --- Draw fruits --- //
+    // --- Draw Fruits --- //
     Fruit *temp = fruits;
     while (temp != NULL)
     {
@@ -116,6 +113,20 @@ void MainSDLWindow::Draw(Segment *head, Fruit *fruits, int ballCount, int length
             SDL_RenderCopy(renderer, ballTexture, NULL, &square);
         }
         temp = temp->GetNext();
+    }
+
+    square.x = SCREEN_SIZE / 2 - (PIXELS * ceil(SET/2));
+    square.y = SCREEN_SIZE - PIXELS;
+    for (int i = 0; i < SET; i++)
+    {   
+        square.x +=  PIXELS;
+        if (ballStars[i])
+        {
+            SetBallTexture(i);
+            SDL_SetRenderTarget(renderer, ballTexture); 
+            SDL_RenderCopy(renderer, ballTexture, NULL, &square);
+        }
+        
     }
 
     // --- Draw every part of the snake --- //
@@ -184,18 +195,38 @@ SDL_Texture *MainSDLWindow::CreateTextureFromImage(const char path[]){
     return texture;
 }
 
-void MainSDLWindow::DrawScore(int score, const char name[]){
+void MainSDLWindow::SetBallTexture(int star){
+    ballString = "textures/ball" + to_string(star) + ".bmp";
+    const char *ballStar = ballString.c_str();
+    ballTexture = CreateTextureFromImage(ballStar);
+}
+
+void MainSDLWindow::DrawText(const char name[]){
+
+    scoreSurface = TTF_RenderText_Solid(font, name, {0, 0, 0});
+    scoreArea.w = scoreSurface->w;
+    scoreArea.h = scoreSurface->h;
+    scoreArea.x = SCREEN_SIZE / 2 - scoreArea.w;
+    scoreArea.y = SCREEN_SIZE - PIXELS;
+    
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreArea);
+}
+
+void MainSDLWindow::DrawText(const char name[], int score){
 
     scoreString = name + to_string(score);
     scoreText = scoreString.c_str();
     scoreSurface = TTF_RenderText_Solid(font, scoreText, {0, 0, 0});
     scoreArea.w = scoreSurface->w;
     scoreArea.h = scoreSurface->h;
-    if (name == "Highscore: ")
+    if (name == BASE_HIGHSCORE_TEXT)
     {
         scoreArea.x = SCREEN_SIZE - scoreArea.w;
+        scoreArea.y = 0;
     }else{
         scoreArea.x = 0;
+        scoreArea.y = 0;
     }
     
     scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
@@ -214,5 +245,13 @@ void MainSDLWindow::CheckForQuit(){
     }
 }
 
+void MainSDLWindow::CheckIfWon(int length, int turn){
+    if (length != MAX_LENGTH - turn)
+    {
+        IsGameWon = true;
+    }
+}
+
 SDL_Renderer *MainSDLWindow::GetRenderer(){return renderer;}
 bool MainSDLWindow::GetGameState(){return IsGameRunning;}
+bool MainSDLWindow::GetIfWon(){return IsGameWon;}

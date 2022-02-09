@@ -1,8 +1,8 @@
 CC=g++
 # Adapt the variables below to your needs:
 EXE=snake
-CPP=main.cpp playground.cpp snake.cpp
-HPP=playground.hpp snake.hpp
+CPP=main.cpp playground.cpp snake.cpp fruit.cpp segment.cpp
+HPP=playground.hpp snake.hpp fruit.hpp segment.hpp
 
 # The default is build the executable file:
 default: $(EXE)

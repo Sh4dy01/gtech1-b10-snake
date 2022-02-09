@@ -1,5 +1,7 @@
+#include "constants.hpp"
 #include "playground.hpp"
 #include "snake.hpp"
+#include "fruit.hpp"
 
 int main()
 {
@@ -17,10 +19,11 @@ int main()
 
         main_window.CheckForQuit();
         snake.Move();
-        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallCount(), snake.GetLength(), snake.GetScore()); //Draw everything
+        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallStars(), snake.GetLength(), snake.GetScore()); //Draw everything
+        main_window.CheckIfWon(snake.GetLength(), snake.GetTurn());
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}
         
-    }while(main_window.GetGameState() && snake.GetLength() < MAX_LENGTH);
+    }while(main_window.GetGameState() && main_window.GetIfWon());
 }

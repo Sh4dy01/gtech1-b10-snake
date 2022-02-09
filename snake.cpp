@@ -1,9 +1,9 @@
 #include "playground.hpp"
-#include <iostream>
 
 Snake::Snake(){
     this->length = this->turn =  1;
-    this->direction = this->newDirection = this->score = this->ballCount = 0;
+    this->direction = this->newDirection = this->score = this->count = 0;
+    this->IsGameWon = false;
 
     this->head = new Segment();
 
@@ -15,6 +15,11 @@ Snake::Snake(){
 
     this->fruit = new Fruit();
     this->fruit->GenerateFruitCoord(head, fruit);
+
+    for (int i = 0; i < SET; i++)
+    {
+        this->ballStars[i] = false;
+    }
 }
 
 Snake::~Snake(){
@@ -65,22 +70,12 @@ void Snake::UpdateCoords(){
     int position = 0;
 
     do{
-        coordsArray[position][0] = body->GetX() / PIXELS;
-        coordsArray[position][1] = body->GetY() / PIXELS;
-        body = body->GetNext(); //fin d'itération
+        cout << "Segment: " << position + 1 << "\n";
+        cout << "X:" << body->GetX() / PIXELS << ", ";
+        cout << "Y:" << body->GetY() / PIXELS << "\n\n";
+        body = body->GetNext();
         position++;
     } while (body != NULL);
-    Debug();
-}
-
-// Affiche les coordonnées de chaque partie du serpent
-void Snake::Debug(){
-    for (int i = 0; i < length; i++)
-    {
-        cout << "Segment: " << i+1 << "\n";
-        cout << "X:" << coordsArray[i][0] << ", ";
-        cout << "Y:" << coordsArray[i][1] << "\n\n";
-    }
 }
 
 // Vérifie si la tête touche une des bordures de la zone de jeu et recommence la partie à zero.
@@ -122,8 +117,14 @@ void Snake::CheckCollision(){
 // Restaure les variables par défaut
 void Snake::Reset(){
     this->length = this->turn =  1;
-    this->direction = this->newDirection = this->score = this->ballCount = 0;
+    this->direction = this->newDirection = this->score = this->count = 0;
+    this->IsGameWon = false;
 
+    for (int i = 0; i < SET; i++)
+    {
+        ballStars[i] = false;
+    }
+    
     head->ResetBody();
     head->SetX(SCREEN_SIZE / 2 - PIXELS);
     head->SetY(head->GetX());
@@ -140,8 +141,10 @@ void Snake::Reset(){
 void Snake::Eat(){
     score += SCORE_TO_ADD * turn;
     length += 1;
-    ballCount += 1;
-    if (ballCount == SET) { ballCount = 0; }
+    count += 1;
+    if (count % SET) { turn += 1; }
+
+    ballStars[fruit->GetStar()] = true;
     
     tail = tail->AddSnake(this->direction, tail->GetX(), tail->GetY());
     if (length == 5) { startCol = tail; }
@@ -153,202 +156,35 @@ void Snake::CheckFruit(){
     {
         Eat();
         fruit->GenerateFruitCoord(head, fruit);
-        if (ballCount % (SET-1) == 0 && ballCount != 0)
-        {
-            cout << "Created MalusBall" << endl;
-            turn += 1;
+        
 
-            Fruit *temp = fruit;
-            while (temp->CheckNext())
-            {
-                temp = temp->GetNext();
-            }
-            temp->GenerateFruit();
+        Fruit *temp = fruit;
+        while (temp->CheckNext())
+        {
             temp = temp->GetNext();
-            temp->SetMalus();
-            temp->GenerateFruitCoord(head, fruit);
         }
+        temp->GenerateFruit();
+        temp = temp->GetNext();
+        temp->SetMalus();
+        temp->GenerateFruitCoord(head, fruit);
     }
-    
-    // Detect malus balls
+
+    Fruit *malusFruits = fruit->GetNext();
+    while (malusFruits != NULL)
+    {
+        if (head->GetX() / PIXELS == malusFruits->GetX() && head->GetY() / PIXELS == malusFruits->GetY())
+        {
+            Reset();
+        }
+        malusFruits = malusFruits->GetNext();
+    }
 }
 
 Segment *Snake::GetHead(){return head;}
 Fruit *Snake::GetFruit(){return fruit;}
 int Snake::GetScore(){return score;}
 int Snake::GetLength(){return length;}
-int Snake::GetBallCount(){return ballCount;}
+int Snake::GetTurn(){return turn;};
 int Snake::GetX(){return head->GetX();}
 int Snake::GetY(){return head->GetY();}
-
-
-Segment::Segment(){
-    this->direction;
-    this->x, this->y = 0;
-    this->direction, this->nextDirection = 0;
-    this->next = NULL;
-}
-
-Segment::~Segment(){
-    if (next != NULL)
-    {
-        delete next;
-    }
-}
-
-void Segment::Init(int direction, int x, int y){
-    this->direction = direction;
-    this->x = x;
-    this->y = y;
-
-    switch (direction)
-    {
-    case UP:
-        this->y += PIXELS;
-        break;
-    case DOWN:
-        this->y -= PIXELS;
-        break;
-    case RIGHT:
-        this->x -= PIXELS;
-        break;
-    case LEFT:
-        this->x += PIXELS;
-        break;
-    default:
-        break;
-    }
-}
-
-Segment *Segment::AddSnake(int direction, int x, int y){
-    Segment *temp = new Segment();
-    next = temp;
-    next->Init(this->direction, this->x, this->y);
-
-    return next;
-}
-
-void Segment::Move(){
-    if (this->x % PIXELS == 0 && this->y % PIXELS == 0)
-    {
-        this->direction = this->nextDirection;
-    }
-
-    switch (direction)
-    {
-    case UP:
-        this->y -= SPEED;
-        break;
-    case DOWN:
-        this->y += SPEED;
-        break;
-    case RIGHT:
-        this->x += SPEED;
-        break;
-    case LEFT:
-        this->x -= SPEED;
-        break;
-    default:
-        break;
-    }
-
-    if (next != NULL)
-    {
-        next->Move();
-    }
-}
-
-void Segment::SetDirection(int nextDirection){
-    this->nextDirection = nextDirection;
-    if (next != NULL)
-    {
-        next->SetDirection(direction);
-    }
-}
-
-void Segment::ResetBody(){
-    if (next != NULL)
-    {
-        delete next;
-    }
-    this->next = NULL;
-}
-
-bool Segment::CheckNext(){return (next != NULL) ? true : false;}
-
-int Segment::GetX(){return x;}
-int Segment::GetY(){return y;}
-Segment *Segment::GetNext(){return next;}
-int Segment::GetDirection(){return direction;}
-
-void Segment::SetX(int newx){this->x = newx;}
-void Segment::SetY(int newy){this->y = newy;}
-
-
-Fruit::Fruit(){
-    this->x = 0;
-    this->y = 0;
-    this->next = NULL;
-    this->malus = false;
-}
-
-Fruit::~Fruit(){
-    if (next != NULL)
-    {
-        delete next;
-    }
-}
-
-Fruit *Fruit::GenerateFruit(){
-    Fruit *temp = new Fruit();
-    next = temp;
-
-    return next;
-}
-
-void Fruit::GenerateFruitCoord(Segment *head, Fruit *fruit){
-    int sameCoord = true;
-    int tempX = rand() % (SQUARES-2) + 1;
-    int tempY = rand() % (SQUARES-2) + 1;
-
-    while (sameCoord)
-    {
-        Segment *body = head;
-        Fruit *fruits = fruit;
-        do
-        {
-            if ((tempX == body->GetX() / PIXELS && tempY == body->GetY() / PIXELS) || (tempX == fruits->GetX() / PIXELS && tempY == fruits->GetY() / PIXELS))
-            {
-                tempX = rand() % (SQUARES-2) + 1;
-                tempY = rand() % (SQUARES-2) + 1;
-
-                break;
-            }else { sameCoord = false; }
-
-            body = body->GetNext();
-            fruits = fruits->GetNext();
-        } while (body != NULL && fruits != NULL);
-    }
-
-    this->x = tempX;
-    this->y = tempY;
-
-    cout << "Fruit: " << x << ", " << y << "\n";
-}
-
-void Fruit::ResetFruits(){
-    if (next != NULL)
-    {
-        delete next;
-    }
-    this->next = NULL;
-}
-
-bool Fruit::CheckNext(){return (next != NULL) ? true : false;}
-
-bool Fruit::GetMalus(){return malus;}
-Fruit *Fruit::GetNext(){return next;}
-int Fruit::GetX(){return x;}
-int Fruit::GetY(){return y;}
-
-void Fruit::SetMalus(){malus = true;}
+bool *Snake::GetBallStars(){return ballStars;}

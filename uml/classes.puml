@@ -15,8 +15,10 @@ class Fruit {
 	+CheckNext() : bool
 	+GetMalus() : bool
 	-malus : bool
+	+GetStar() : int
 	+GetX() : int
 	+GetY() : int
+	-star : int
 	-x : int
 	-y : int
 	+GenerateFruitCoord(Segment* head, Fruit* fruit) : void
@@ -46,7 +48,9 @@ class MainSDLWindow {
 	-window : SDL_Window*
 	-font : TTF_Font*
 	+GetGameState() : bool
+	+GetIfWon() : bool
 	-IsGameRunning : bool
+	-IsGameWon : bool
 	-scoreText : const char*
 	+Init() : int
 	-ballCount : int
@@ -54,8 +58,12 @@ class MainSDLWindow {
 	-ballString : string
 	-scoreString : string
 	+CheckForQuit() : void
-	+Draw(Segment* head, Fruit* fruits, int length, int ballCount, int score) : void
-	+DrawScore(int score, const char name) : void
+	+CheckIfWon(int length, int turn) : void
+	+Draw(Segment* head, Fruit* fruits, bool ballStars, int length, int score) : void
+	+DrawSet(int star) : void
+	+DrawText(const char name) : void
+	+DrawText(const char name, int score) : void
+	+SetBallTexture(int star) : void
 }
 
 
@@ -91,14 +99,16 @@ class Snake {
 	-head : Segment*
 	-startCol : Segment*
 	-tail : Segment*
+	-IsGameWon : bool
+	-ballStars : bool
+	+GetBallStars() : bool*
 	+GetBallCount() : int
 	+GetLength() : int
 	+GetScore() : int
 	+GetTurn() : int
 	+GetX() : int
 	+GetY() : int
-	-ballCount : int
-	-coordsArray : int
+	-count : int
 	-direction : int
 	-length : int
 	-newDirection : int
