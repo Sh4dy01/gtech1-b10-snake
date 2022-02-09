@@ -8,12 +8,20 @@
 
 class Fruit {
 	+Fruit()
+	+~Fruit()
+	+GenerateFruit() : Fruit*
+	+GetNext() : Fruit*
+	-next : Fruit*
+	+CheckNext() : bool
+	+GetMalus() : bool
+	-malus : bool
 	+GetX() : int
 	+GetY() : int
 	-x : int
 	-y : int
-	+GenerateFruit() : void
-	+GenerateFruit(Segment* head) : void
+	+GenerateFruitCoord(Segment* head, Fruit* fruit) : void
+	+ResetFruits() : void
+	+SetMalus() : void
 }
 
 
@@ -28,18 +36,26 @@ class MainSDLWindow {
 	-scoreSurface : SDL_Surface*
 	- : SDL_Texture*
 	- : SDL_Texture*
-	-headText : SDL_Texture*
-	-scoreText : SDL_Texture*
-	-tailText : SDL_Texture*
+	+CreateTextureFromImage(const char path) : SDL_Texture*
+	-headTexture : SDL_Texture*
+	-mBallTexture : SDL_Texture*
+	-tailTexture : SDL_Texture*
+	- : SDL_Texture**
 	- : SDL_Texture**
 	- : SDL_Texture**
 	-window : SDL_Window*
 	-font : TTF_Font*
 	+GetGameState() : bool
 	-IsGameRunning : bool
+	-scoreText : const char*
 	+Init() : int
+	-ballCount : int
+	-highScore : int
+	-ballString : string
+	-scoreString : string
 	+CheckForQuit() : void
-	+Draw(Segment* head, int fruitX, int fruitY, int length, int score) : void
+	+Draw(Segment* head, Fruit* fruits, int length, int ballCount, int score) : void
+	+DrawScore(int score, const char name) : void
 }
 
 
@@ -75,15 +91,19 @@ class Snake {
 	-head : Segment*
 	-startCol : Segment*
 	-tail : Segment*
+	+GetBallCount() : int
 	+GetLength() : int
 	+GetScore() : int
+	+GetTurn() : int
 	+GetX() : int
 	+GetY() : int
+	-ballCount : int
 	-coordsArray : int
 	-direction : int
 	-length : int
 	-newDirection : int
 	-score : int
+	-turn : int
 	+CheckBorders() : void
 	+CheckCollision() : void
 	+CheckDirection() : void
@@ -105,6 +125,9 @@ class Snake {
 
 
 /' Aggregation relationships '/
+
+.Fruit o-- .Fruit
+
 
 .Segment o-- .Segment
 
