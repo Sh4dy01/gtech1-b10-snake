@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <SDL2/SDL.h>
 
 #include "constants.hpp"
 #include "segment.hpp"
@@ -14,20 +14,20 @@ public:
     void Move();
     void Eat();
     void CheckDirection();
-    void CheckBorders();
-    void CheckCollision();
-    void CheckFruit();
+    void CheckBordersCollision();
+    void CheckBodyCollision();
+    void CheckFruitCollision();
     void UpdateCoords();
-    void Debug();
     void Reset();
+    void ResetBallCollection();
 
     int GetX();
     int GetY();
     int GetScore();
     int GetLength();
-    int GetBallCount();
-    int GetTurn();
+    int GetLevel();
     bool *GetBallStars();
+    bool CheckIfCanWin();
     Segment *GetHead();
     Fruit *GetFruit();
 
@@ -36,9 +36,10 @@ private:
     Segment *startCol;
     Segment *tail;
     Fruit *fruit;
+    Fruit *last;
 
-    bool IsGameWon;
-    bool ballStars[SET];
-    int length, score, turn, count;
+    bool CanWin, CanSpawnWinBall;
+    bool ballCollection[SET];
+    int length, score, turn, difficultyLevel;
     int direction, newDirection;
 };

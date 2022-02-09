@@ -1,9 +1,10 @@
-#include "playground.hpp"
+#include "snake.hpp"
 
 Snake::Snake(){
-    this->length = this->turn =  1;
-    this->direction = this->newDirection = this->score = this->count = 0;
-    this->IsGameWon = false;
+    this->length = this->turn =  this->difficultyLevel =  1;
+    this->direction = this->newDirection = this->score = 0;
+    this->CanWin = false;
+    this->CanSpawnWinBall = true;
 
     this->head = new Segment();
 
@@ -18,7 +19,7 @@ Snake::Snake(){
 
     for (int i = 0; i < SET; i++)
     {
-        this->ballStars[i] = false;
+        this->ballCollection[i] = false;
     }
 }
 
@@ -26,7 +27,7 @@ Snake::~Snake(){
     delete head, fruit, tail, startCol;
 }
 
-// Change la direction du snake si appuie d'une des flèches directionnelles
+// Change the head's direction if the arrows are pressed
 void Snake::CheckDirection(){
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
 
@@ -58,13 +59,13 @@ void Snake::Move(){
     if (direction != PAUSE)
     {
         head->Move();
-        CheckCollision();
-        CheckBorders();
-        CheckFruit();
+        CheckBodyCollision();
+        CheckBordersCollision();
+        CheckFruitCollision();
     }
 }
 
-// Met à jour les coordonnées de chaque partie du segment
+// Update every segment's coords
 void Snake::UpdateCoords(){
     Segment *body = head;
     int position = 0;
@@ -78,8 +79,8 @@ void Snake::UpdateCoords(){
     } while (body != NULL);
 }
 
-// Vérifie si la tête touche une des bordures de la zone de jeu et recommence la partie à zero.
-void Snake::CheckBorders(){
+// Check if the head touched the borders
+void Snake::CheckBordersCollision(){
     if (head->GetX() > SCREEN_SIZE - PIXELS * 2)
     {
         Reset();
@@ -98,7 +99,8 @@ void Snake::CheckBorders(){
     }
 }
 
-void Snake::CheckCollision(){
+// Check if the head touched his body
+void Snake::CheckBodyCollision(){
     if (length > 4)
     {
         Segment *checkCol = startCol;
@@ -114,16 +116,82 @@ void Snake::CheckCollision(){
     }
 }
 
-// Restaure les variables par défaut
-void Snake::Reset(){
-    this->length = this->turn =  1;
-    this->direction = this->newDirection = this->score = this->count = 0;
-    this->IsGameWon = false;
+// Add a segment after the tail
+void Snake::Eat(){
+    length += 1;
+    score += SCORE_TO_ADD * difficultyLevel;
 
+    ballCollection[fruit->GetStar()-1] = true;
+
+    CanWin = true;
     for (int i = 0; i < SET; i++)
     {
-        ballStars[i] = false;
+        if (ballCollection[i] == false)
+        {
+            CanWin = false;
+        }
     }
+    
+    tail = tail->AddSnake(this->direction, tail->GetX(), tail->GetY());
+    if (length == 5) { startCol = tail; }
+    UpdateCoords();
+}
+
+// Check if the head hurt a fruit
+void Snake::CheckFruitCollision(){
+    if (head->GetX() / PIXELS == fruit->GetX() && head->GetY() / PIXELS == fruit->GetY())
+    {
+        Eat();
+        fruit->GenerateFruitCoord(head, fruit);
+        
+        for (int i = 0; i < difficultyLevel; i++)
+        {
+            Fruit *temp = fruit;
+            while (temp->CheckNext())
+            {
+                temp = temp->GetNext();
+            }
+            temp->GenerateFruit();
+            temp = temp->GetNext();
+
+            if (CanWin && CanSpawnWinBall)
+            {
+                temp->SetWinnable();
+                CanSpawnWinBall = false;
+            } else { temp->SetMalus(); }
+            
+            temp->GenerateFruitCoord(head, fruit);
+        }
+    }
+
+    Fruit *allFruits = fruit->GetNext();
+    while (allFruits != NULL)
+    {
+        if (head->GetX() / PIXELS == allFruits->GetX() && head->GetY() / PIXELS == allFruits->GetY())
+        {
+            if (allFruits->CheckIfMalus())
+            {
+                Reset();
+            } else if (allFruits->CheckIfWin())
+            {
+                fruit->ResetFruits();
+                difficultyLevel++;
+                ResetBallCollection();
+                break;
+            }       
+        }
+        allFruits = allFruits->GetNext();
+    }
+}
+
+// Reset the variables
+void Snake::Reset(){
+    srand(time(NULL));
+    
+    this->length = this->turn =  this->difficultyLevel =  1;
+    this->direction = this->newDirection = this->score = 0;
+    this->CanWin = false;
+    this->CanSpawnWinBall = true;
     
     head->ResetBody();
     head->SetX(SCREEN_SIZE / 2 - PIXELS);
@@ -134,57 +202,26 @@ void Snake::Reset(){
     fruit->ResetFruits();
     fruit->GenerateFruitCoord(head, fruit);
 
+    ResetBallCollection();
+
     UpdateCoords();
 }
 
-// Agrandie le serpent
-void Snake::Eat(){
-    score += SCORE_TO_ADD * turn;
-    length += 1;
-    count += 1;
-    if (count % SET) { turn += 1; }
-
-    ballStars[fruit->GetStar()] = true;
-    
-    tail = tail->AddSnake(this->direction, tail->GetX(), tail->GetY());
-    if (length == 5) { startCol = tail; }
-    UpdateCoords();
-}
-
-void Snake::CheckFruit(){
-    if (head->GetX() / PIXELS == fruit->GetX() && head->GetY() / PIXELS == fruit->GetY())
+void Snake::ResetBallCollection(){
+    for (int i = 0; i < SET; i++)
     {
-        Eat();
-        fruit->GenerateFruitCoord(head, fruit);
-        
-
-        Fruit *temp = fruit;
-        while (temp->CheckNext())
-        {
-            temp = temp->GetNext();
-        }
-        temp->GenerateFruit();
-        temp = temp->GetNext();
-        temp->SetMalus();
-        temp->GenerateFruitCoord(head, fruit);
+        ballCollection[i] = false;
     }
 
-    Fruit *malusFruits = fruit->GetNext();
-    while (malusFruits != NULL)
-    {
-        if (head->GetX() / PIXELS == malusFruits->GetX() && head->GetY() / PIXELS == malusFruits->GetY())
-        {
-            Reset();
-        }
-        malusFruits = malusFruits->GetNext();
-    }
+    CanSpawnWinBall = true;
 }
 
 Segment *Snake::GetHead(){return head;}
 Fruit *Snake::GetFruit(){return fruit;}
 int Snake::GetScore(){return score;}
 int Snake::GetLength(){return length;}
-int Snake::GetTurn(){return turn;};
 int Snake::GetX(){return head->GetX();}
 int Snake::GetY(){return head->GetY();}
-bool *Snake::GetBallStars(){return ballStars;}
+int Snake::GetLevel(){return difficultyLevel;}
+bool Snake::CheckIfCanWin(){return CanWin;}
+bool *Snake::GetBallStars(){return ballCollection;}

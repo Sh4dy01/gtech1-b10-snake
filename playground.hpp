@@ -1,32 +1,31 @@
 #pragma once
 
+#include "snake.hpp"
+#include "constants.hpp"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <string>
 
-#include "snake.hpp"
-
-using namespace std;
 
 class MainSDLWindow{
 
 public:
     MainSDLWindow();
     ~MainSDLWindow();
+
     int Init();
-    void Draw(Segment *head, Fruit *fruits, bool ballStars[SET], int length, int score);
-    void CheckForQuit();
+    void Draw(Segment *head, Fruit *fruits, bool ballCollection[SET], int length, int score, int level);
     SDL_Texture *CreateTextureFromImage(const char path[]);
     void DrawText(const char name[]);
     void DrawText(const char name[], int score);
-    void SetBallTexture(int star);
-    void DrawSet(int star);
+
+    void CheckForQuit();
 
     SDL_Renderer *GetRenderer();
     bool GetGameState();
-    bool GetIfWon();
 
-    void CheckIfWon(int length, int turn);
+    void SetBallTexture(int star);
 
 private:
     bool IsGameRunning;
@@ -40,6 +39,6 @@ private:
     SDL_Renderer *renderer;
     SDL_Rect map, square, scoreArea;
     SDL_Surface *scoreSurface;
-    SDL_Texture *headTexture, *bodyTexture, *tailTexture, *ballTexture, *mBallTexture, *scoreTexture;
+    SDL_Texture *headTexture, *bodyTexture, *tailTexture, *ballTexture, *malusBallTexture, *winBallTexture, *scoreTexture;
     TTF_Font *font;
 };

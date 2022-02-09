@@ -1,10 +1,10 @@
-#include "constants.hpp"
 #include "playground.hpp"
 #include "snake.hpp"
-#include "fruit.hpp"
 
 int main()
 {
+    srand(time(NULL));
+
     Uint32 frame_start;
     int frame_delay;
 
@@ -19,11 +19,10 @@ int main()
 
         main_window.CheckForQuit();
         snake.Move();
-        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallStars(), snake.GetLength(), snake.GetScore()); //Draw everything
-        main_window.CheckIfWon(snake.GetLength(), snake.GetTurn());
+        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallStars(), snake.GetLength(), snake.GetScore(), snake.GetLevel()); //Draw everything
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}
         
-    }while(main_window.GetGameState() && main_window.GetIfWon());
+    }while(main_window.GetGameState());
 }

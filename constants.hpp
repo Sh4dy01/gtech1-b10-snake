@@ -1,8 +1,11 @@
 #pragma once
 
-#define BASE_SCORE_TEXT "Score: "
-#define BASE_HIGHSCORE_TEXT "Highscore: "
+#define BASE_SCORE_TEXT "SCORE: "
+#define BASE_HIGHSCORE_TEXT "HIGHSCORE: "
+#define LEVEL_TEXT "LEVEL: "
 #define NAME_OF_THE_GAME "SNAKE"
+#define COLLECTION_TEXT "COLLECTION: "
+#define LINE_WIDTH 5
 
 #define FRAME_RATE 20
 #define PIXELS 32
@@ -19,3 +22,5 @@
 #define RIGHT 2
 #define LEFT -2
 #define PAUSE 0
+
+using namespace std;

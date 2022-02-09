@@ -12,21 +12,25 @@ public:
 
     Fruit *GenerateFruit();
     void GenerateFruitCoord(Segment *head, Fruit *fruit);
+    int GenerateRandomNumber();
     void ResetFruits();
 
     bool CheckNext();
 
-    bool GetMalus();
+    bool CheckIfWin();
+    bool CheckIfMalus();
+    
     int GetX();
     int GetY();
     int GetStar();
     Fruit *GetNext();
 
     void SetMalus();
+    void SetWinnable();
 
 private:
     int x,y;
     int star;
-    bool malus;
+    bool malus,win;
     Fruit *next;
 };
