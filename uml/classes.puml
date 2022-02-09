@@ -12,9 +12,12 @@ class Fruit {
 	+GenerateFruit() : Fruit*
 	+GetNext() : Fruit*
 	-next : Fruit*
+	+CheckIfMalus() : bool
+	+CheckIfWin() : bool
 	+CheckNext() : bool
-	+GetMalus() : bool
 	-malus : bool
+	-win : bool
+	+GenerateRandomNumber() : int
 	+GetStar() : int
 	+GetX() : int
 	+GetY() : int
@@ -24,6 +27,7 @@ class Fruit {
 	+GenerateFruitCoord(Segment* head, Fruit* fruit) : void
 	+ResetFruits() : void
 	+SetMalus() : void
+	+SetWinnable() : void
 }
 
 
@@ -38,9 +42,11 @@ class MainSDLWindow {
 	-scoreSurface : SDL_Surface*
 	- : SDL_Texture*
 	- : SDL_Texture*
+	- : SDL_Texture*
 	+CreateTextureFromImage(const char path) : SDL_Texture*
 	-headTexture : SDL_Texture*
-	-mBallTexture : SDL_Texture*
+	-malusBallTexture : SDL_Texture*
+	-scoreTexture : SDL_Texture*
 	-tailTexture : SDL_Texture*
 	- : SDL_Texture**
 	- : SDL_Texture**
@@ -48,7 +54,6 @@ class MainSDLWindow {
 	-window : SDL_Window*
 	-font : TTF_Font*
 	+GetGameState() : bool
-	+GetIfWon() : bool
 	-IsGameRunning : bool
 	-IsGameWon : bool
 	-scoreText : const char*
@@ -58,9 +63,7 @@ class MainSDLWindow {
 	-ballString : string
 	-scoreString : string
 	+CheckForQuit() : void
-	+CheckIfWon(int length, int turn) : void
-	+Draw(Segment* head, Fruit* fruits, bool ballStars, int length, int score) : void
-	+DrawSet(int star) : void
+	+Draw(Segment* head, Fruit* fruits, bool ballCollection, int length, int score, int level) : void
 	+DrawText(const char name) : void
 	+DrawText(const char name, int score) : void
 	+SetBallTexture(int star) : void
@@ -95,33 +98,35 @@ class Snake {
 	+~Snake()
 	+GetFruit() : Fruit*
 	-fruit : Fruit*
+	-last : Fruit*
 	+GetHead() : Segment*
 	-head : Segment*
 	-startCol : Segment*
 	-tail : Segment*
-	-IsGameWon : bool
-	-ballStars : bool
+	-CanSpawnWinBall : bool
+	-CanWin : bool
+	+CheckIfCanWin() : bool
+	-ballCollection : bool
 	+GetBallStars() : bool*
-	+GetBallCount() : int
 	+GetLength() : int
+	+GetLevel() : int
 	+GetScore() : int
-	+GetTurn() : int
 	+GetX() : int
 	+GetY() : int
-	-count : int
+	-difficultyLevel : int
 	-direction : int
 	-length : int
 	-newDirection : int
 	-score : int
 	-turn : int
-	+CheckBorders() : void
-	+CheckCollision() : void
+	+CheckBodyCollision() : void
+	+CheckBordersCollision() : void
 	+CheckDirection() : void
-	+CheckFruit() : void
-	+Debug() : void
+	+CheckFruitCollision() : void
 	+Eat() : void
 	+Move() : void
 	+Reset() : void
+	+ResetBallCollection() : void
 	+UpdateCoords() : void
 }
 
@@ -142,7 +147,7 @@ class Snake {
 .Segment o-- .Segment
 
 
-.Snake o-- .Fruit
+.Snake "2" o-- .Fruit
 
 
 .Snake "3" o-- .Segment
