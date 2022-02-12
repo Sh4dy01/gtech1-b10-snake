@@ -22,8 +22,7 @@ Ainsi, plus on récupère de **boule de Cristal**, plus il y a de **boule maléf
 
 ## Pour lancer le jeu sous Linux :
 
-1. Tout d'abord vous devez avoir installer un système d'exploitation Linux sous Windows comme Debian via le Microsoft Store et créer un compte.
-
+1. Tout d'abord, vous devez avoir installer un système d'exploitation Linux sous Windows comme Debian via le Microsoft Store et créer un compte.
 2. Ensuite, installer les librairies suivantes :
 ```
 sudo apt-get update
@@ -46,7 +45,7 @@ make run
 ---
 ### **À propos du projet :**
 
-Ce projet #7 proposé par [Nicolas BERCHER](https://www.linkedin.com/in/nicolas-bercher), intervenant du [Gaming Campus](https://gamingcampus.fr/) nous a permis de découvrir : 
+Ce projet #7 proposé par [Nicolas BERCHER](https://www.linkedin.com/in/nicolas-bercher), intervenant du [Gaming Campus](https://gamingcampus.fr/) nous a permis de découvrir pendant 4 semaines intenses : 
 - Le langage de programmation **C++** & sa gestion mémoire
 - Une utilisation approfondie de **Git & GitHub**
 - Les outils sous **Linux** (Make, G++, Git)
