@@ -1,35 +1,54 @@
-# Snake - Dragon Ball version
+# Snake version Dragon Ball 
 
 ## Les règles sont simples :
 
-- Le but étant de diriger notre dragon **Shenron** afin de récupérer les **7 boules de Cristal** (boules jaunes).
+- Le but est de diriger notre dragon **Shenron** afin de récupérer les **7 boules de Cristal** (boules jaunes).
     Chaque boule récupérée est déposée dans votre **Collection**.
 
-**MAIS ATTENTION !** A chaque **boule de Cristal** récupérée, une **boule Maléfique** apparaît (boule rouge).
-    Ainsi, plus on récupère de **boule de Cristal**, plus il y a de **boule Maléfique** sur le terrain.
-    A vous de les éviter sinon **GAME OVER**.
+**MAIS ATTENTION !**
+
+À chaque **boule de Cristal** récupérée, une **boule Maléfique** apparaît (boule rouge).
+Ainsi, plus on récupère de **boule de Cristal**, plus il y a de **boule maléfique** sur le terrain.
+
+À vous de les éviter sinon **GAME OVER**.
+
 
 - Une fois les **7 boules de Cristal** récupérées, deux choix s'offrent à vous : 
-    1. Continuer à récupérer les boules afin de faire monter votre **Score**.
-    2. Récupérer la **boule Exit** (boule verte) et passer au **Level** suivant.
+    - Continuer à récupérer les boules afin de faire monter votre **Score**.
+    - Récupérer la **boule Exit** (boule verte) et passer au **niveau de difficulté** suivant.
 
-- A chaque **Level** passé, vos points gagnés par **boule de Cristal** récupérée double. Mais le nombre de **boule Maléfique** double aussi !
-
-- Votre **Score** est mémorisé à chaque fin de partie **(Highscore)** et à chaque fois que vous récupérer une **boule Exit**.
+- À chaque **niveau** passé, vos points gagnés par **boule de Cristal** récupérée double tout comme le nombre de **boule maléfique**.
 
 
-## Pour lancer le jeu (Linux) :
-1. Il vous faudra tout d'abord installer les librairies suivantes :
+## Pour lancer le jeu sous Linux :
+
+1. Tout d'abord vous devez avoir installer un système d'exploitation Linux sous Windows comme Debian via le Microsoft Store et créer un compte.
+
+2. Ensuite, installer les librairies suivantes :
 ```
 sudo apt-get update
-sudo apt-get install make g++ libsdl2-dev libsdl-ttf2.0-dev
+sudo apt-get install make g++ git libsdl2-dev libsdl-ttf2.0-dev
 ```
-
-2. Puis lancer la commande :
+3. Télécharger le jeu via GitHub :
+```
+git clone https://github.com/Sh4dy01/gtech1-b10-snake.git snake
+```
+4. Aller dans le répertoire du jeu :
+```
+cd snake
+```
+4. Lancer le jeu :
 ```
 make run
 ```
+*Good Luck & Have Fun*
 
-3. Utiliser les *flèches du clavier* pour vous diriger.
+---
+### **À propos du projet :**
 
-**A vous de jouer !**
+Ce projet #7 proposé par [Nicolas BERCHER](https://www.linkedin.com/in/nicolas-bercher), intervenant du [Gaming Campus](https://gamingcampus.fr/) nous a permis de découvrir : 
+- Le langage de programmation **C++** & sa gestion mémoire
+- Une utilisation approfondie de **Git & GitHub**
+- Les outils sous **Linux** (Make, G++, Git)
+- Une librairie graphique (**SDL2**)
+- **Visual Code sous WSL**
