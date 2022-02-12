@@ -19,14 +19,14 @@ Ainsi, plus on récupère de **boule de Cristal**, plus il y a de **boule maléf
 
 - À chaque **niveau** passé, vos points gagnés par **boule de Cristal** récupérée double tout comme le nombre de **boule maléfique**.
 
-
+---
 ## Pour lancer le jeu sous Linux :
 
 1. Tout d'abord, vous devez avoir installer un système d'exploitation Linux sous Windows comme Debian via le Microsoft Store et créer un compte.
 2. Ensuite, installer les librairies suivantes :
 ```
 sudo apt-get update
-sudo apt-get install make g++ git libsdl2-dev libsdl-ttf2.0-dev
+sudo apt-get install make g++ git libsdl2-dev libsdl2-ttf-dev
 ```
 3. Télécharger le jeu via GitHub :
 ```
