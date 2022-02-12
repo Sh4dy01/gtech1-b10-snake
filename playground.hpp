@@ -15,7 +15,7 @@ public:
     ~MainSDLWindow();
 
     int Init();
-    void Draw(Segment *head, Fruit *fruits, bool ballCollection[SET], int length, int score, int level);
+    void Draw(Segment *head, Fruit *fruits, bool ballCollection[SET], int length, int score, int level, bool canWin);
     SDL_Texture *CreateTextureFromImage(const char path[]);
     void DrawText(const char name[]);
     void DrawText(const char name[], int score);

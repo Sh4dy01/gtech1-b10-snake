@@ -38,7 +38,7 @@ private:
     Fruit *fruit;
     Fruit *last;
 
-    bool CanWin, CanSpawnWinBall;
+    bool canWin;
     bool ballCollection[SET];
     int length, score, turn, difficultyLevel;
     int direction, newDirection;

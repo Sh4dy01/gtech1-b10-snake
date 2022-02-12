@@ -79,7 +79,7 @@ int MainSDLWindow::Init(){
 }
 
 // Draw everything
-void MainSDLWindow::Draw(Segment *head, Fruit *fruits, bool ballCollection[SET], int length, int score, int level){
+void MainSDLWindow::Draw(Segment *head, Fruit *fruits, bool ballCollection[SET], int length, int score, int level, bool canWin){
     int angle = 0;
 
     SetBallTexture(fruits->GetStar());
@@ -98,7 +98,7 @@ void MainSDLWindow::Draw(Segment *head, Fruit *fruits, bool ballCollection[SET],
     DrawText(BASE_SCORE_TEXT, score);
     DrawText(BASE_HIGHSCORE_TEXT, highScore);
 
-    // --- Draw Fruits --- //
+    // --- Draw Dragon Balls --- //
     Fruit *temp = fruits;
     while (temp != NULL)
     {
@@ -112,13 +112,14 @@ void MainSDLWindow::Draw(Segment *head, Fruit *fruits, bool ballCollection[SET],
         }else if (temp->CheckIfWin()){
             SDL_SetRenderTarget(renderer, winBallTexture); 
             SDL_RenderCopy(renderer, winBallTexture, NULL, &square);
-        } else {
+        } else if (!canWin){ // Don't draw a dragon ball if the exit ball spawned
             SDL_SetRenderTarget(renderer, ballTexture); 
             SDL_RenderCopy(renderer, ballTexture, NULL, &square);
         }
         temp = temp->GetNext();
     }
-    // --- Draw Balls --- //
+    
+    // --- Draw Ball collection --- //
     square.x = SCREEN_SIZE / 2 - (PIXELS * floor(SET/2));
     square.y = SCREEN_SIZE - PIXELS;
     for (int i = 0; i < SET; i++)

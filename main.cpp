@@ -19,7 +19,7 @@ int main()
 
         main_window.CheckForQuit();
         snake.Move();
-        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallStars(), snake.GetLength(), snake.GetScore(), snake.GetLevel()); //Draw everything
+        main_window.Draw(snake.GetHead(), snake.GetFruit(), snake.GetBallStars(), snake.GetLength(), snake.GetScore(), snake.GetLevel(), snake.CheckIfCanWin()); //Draw everything
 
         frame_delay = FRAME_RATE - (SDL_GetTicks() - frame_start);
         if (frame_delay > 0) {SDL_Delay(frame_delay);}

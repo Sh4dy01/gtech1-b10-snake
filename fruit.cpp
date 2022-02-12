@@ -22,7 +22,7 @@ Fruit *Fruit::GenerateFruit(){
     return next;
 }
 
-void Fruit::GenerateFruitCoord(Segment *head, Fruit *fruit){
+void Fruit::GenerateFruitCoord(Segment *head, Fruit *fruit, int star){
     int sameCoord = true;
     int tempX = GenerateRandomNumber();
     int tempY = GenerateRandomNumber();
@@ -70,7 +70,7 @@ void Fruit::GenerateFruitCoord(Segment *head, Fruit *fruit){
         }
     } while (sameCoord);
 
-    this->star = rand() % SET + 1;
+    this->star = star+1;
     this->x = tempX;
     this->y = tempY;
 }

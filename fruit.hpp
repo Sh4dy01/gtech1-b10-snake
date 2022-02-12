@@ -11,7 +11,7 @@ public:
     ~Fruit();
 
     Fruit *GenerateFruit();
-    void GenerateFruitCoord(Segment *head, Fruit *fruit);
+    void GenerateFruitCoord(Segment *head, Fruit *fruit, int star);
     int GenerateRandomNumber();
     void ResetFruits();
 
